@@ -12,12 +12,12 @@ def main():
 	output_size = 5
 	batch_size = 256
 	gamma = 0.99
-	tau = 0.005
+	F = 500
 	lr = 1e-4
 	eps_start = 0.9
 	eps_end = 0.05
 	eps_decay = 2000
-	n_episode = 100
+	n_episode = 250
 	
 
 	# Init environment 
@@ -36,8 +36,8 @@ def main():
 				 output_size=output_size,
 				 batch_size=batch_size,
 				 gamma=gamma,
-				 tau=tau,
 				 lr=lr,
+				 F=F,
 				 eps_start=eps_start,
 				 eps_end=eps_end,
 				 eps_decay=eps_decay)
@@ -73,7 +73,7 @@ def main():
 		gym.close()
 		brain.save()
 		plot_reward_history(reward_episode,episode_duration, total_steps)
-
+		print("Simulation Terminated!")
 
 
 def reset_gym(gym, brain):

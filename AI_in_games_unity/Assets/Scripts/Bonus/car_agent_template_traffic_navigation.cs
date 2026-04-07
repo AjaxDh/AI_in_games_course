@@ -9,7 +9,7 @@ using Unity.MLAgents.Actuators;
 public class car_agent_template_traffic_navigation : car_agent
 {
     // Initialisation
-    private navigation_correction nav_script;
+    private navigation nav_script;
     private enum situationals {none, traffic_light};
     private situationals current_situational;
     private GameObject situational_object;
@@ -22,7 +22,7 @@ public class car_agent_template_traffic_navigation : car_agent
     /// </summary>
     protected override void _start()
     {
-        nav_script = this.transform.parent.GetComponentInChildren<navigation_correction>();
+        nav_script = this.transform.parent.GetComponentInChildren<navigation>();
         situational_object = null;
     }
 
