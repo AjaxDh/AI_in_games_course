@@ -20,11 +20,9 @@ class Network(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
 
-#       !!!!!!!!!!!!!! Implement the network architecture !!!!!!!!!!!!!!
-# 
-#        self.fc_input = nn.Linear(input_size, ???)
-#        ...
-#        self.fc_output = nn.Linear( ??? , output_size)
+        self.fc_input = nn.Linear(input_size, 512)
+        self.fc_hidden = nn.Linear(512, 512)
+        self.fc_output = nn.Linear(512, output_size)
 
 
     def forward(self, state):
@@ -37,10 +35,10 @@ class Network(nn.Module):
             torch tensor: Q-value
         """
 
-#       !!!!!!!!!!!!!! Implement the input propagation through the network to get the Q-value !!!!!!!!!!!!!!        
-#
-#        q_values = ???
-#        return q_values
+        x = F.relu(self.fc_input(state))
+        x = F.relu(self.fc_hidden(x))
+        q_values = self.fc_output(x)
+        return q_values
 
 
 class ReplayMemory(object):
