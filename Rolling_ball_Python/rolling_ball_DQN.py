@@ -81,7 +81,7 @@ class ReplayMemory(object):
 
 class Dqn():
     
-    def __init__(self, input_size, output_size, batch_size=256, gamma=0.99, F=500, lr=1e-4, eps_start=0.9, eps_end=0.05, eps_decay=2000):
+    def __init__(self, input_size, output_size, batch_size=128, gamma=0.99, F=1000, lr=3e-4, eps_start=1.0, eps_end=0.05, eps_decay=8000):
         """ Implements the deep Q-learning algorithm
 
         Args:
@@ -113,7 +113,7 @@ class Dqn():
 
         self.Q_net = Network(input_size, output_size).to(self.device)
         self.target_net = Network(input_size, output_size).to(self.device)
-        self.memory = ReplayMemory(100000)
+        self.memory = ReplayMemory(200000)
 
         self.output_size = output_size
         self.input_size = input_size
