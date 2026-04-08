@@ -170,8 +170,7 @@ class Dqn():
         # We create batches containing only non None values.
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
                                           batch.next_state)), device=self.device, dtype=torch.bool)
-        non_final_next_states = torch.cat([s for s in batch.next_state
-                                                    if s is not None])
+        non_final_next_states_list = [s for s in batch.next_state if s is not None]
         state_batch = torch.cat(batch.state)
         action_batch = torch.cat(batch.action)
         reward_batch = torch.cat(batch.reward)
@@ -181,13 +180,13 @@ class Dqn():
         # Get Q-value for time t+1
         state_action_values = self.Q_net(state_batch).gather(1, action_batch)
         next_state_values = torch.zeros(batch_size, device=self.device)
-        with torch.no_grad():
-            next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1).values
+        if len(non_final_next_states_list) > 0:
+            non_final_next_states = torch.cat(non_final_next_states_list)
+            with torch.no_grad():
+                next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1).values
 
-#       !!!!!!!!!!!!!! Calculate target !!!!!!!!!!!!!!
-#
-#       target = 
-#       
+        # Bellman target: r_t + gamma * max_a Q_target(s_{t+1}, a)
+        target = reward_batch + (self.gamma * next_state_values)
 
 
         # Training the network by updating its weight
@@ -220,13 +219,8 @@ class Dqn():
         else:
             new_state = torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0)
 
-
-
-#       !!!!!!!!!!!!!! Add the new state to memory !!!!!!!!!!!!!!
-#
-#       self.memory.push()
-#       self.state = ?
-#        
+        # Store transition (s_t, a_t, s_{t+1}, r_t) in replay memory.
+        self.memory.push(self.state, self.last_action, new_state, reward)
         
     
 
@@ -237,10 +231,9 @@ class Dqn():
 
 
 
-#        !!!!!!!!!!!!!! Update target network at some frequency F !!!!!!!!!!!!!!
-#        neural_net1.load_state_dict(neural_net2.state_dict()) -> Load weights of neural net2 in neural net1
-#
-#
+        # Periodically copy online network weights into target network.
+        if self.steps_done % self.F == 0:
+            self.target_net.load_state_dict(self.Q_net.state_dict())
 
 
 
