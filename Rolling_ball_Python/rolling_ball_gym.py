@@ -10,14 +10,14 @@ def main():
 	#Parameters
 	input_size = 9
 	output_size = 5
-	batch_size = 128
+	batch_size = 256
 	gamma = 0.99
-	F = 1000
-	lr = 3e-4
-	eps_start = 1.0
+	F = 500
+	lr = 1e-4
+	eps_start = 0.9
 	eps_end = 0.05
-	eps_decay = 8000
-	n_episode = 600
+	eps_decay = 2000
+	n_episode = 250
 	
 
 	# Init environment 
@@ -46,14 +46,12 @@ def main():
 		reset_gym(gym,brain)
 		
 		for episode in range(n_episode):
-			episode_reward = 0.0
 			while True:
 				# Advance one step in the environment
 				step += 1
 				action = brain.select_actions(brain.state, True)
 				observation, reward, terminated, _ = gym.step(action.item())
 				observation = observation[0]
-				episode_reward += reward
 
 				# Update DQN with new environment state
 				brain.update(reward,observation,terminated,True)
@@ -62,11 +60,11 @@ def main():
 				# If agent reached end of episode
 				if(terminated):
 					reset_gym(gym,brain)
-					reward_episode.append(episode_reward)
+					reward_episode.append(reward)
 					episode_duration.append(step)
 					nb_episode = len(reward_episode)
 					total_steps += step
-					print(f"Episode: {nb_episode} / Step: {total_steps} / Episode reward: {episode_reward:.3f} / Duration: {step}")
+					print(f"Episode: {nb_episode} / Step: {total_steps} / Reward: {reward} / Duration: {step}")
 					step = 0
 					break
 

@@ -20,9 +20,11 @@ class Network(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
 
-        self.fc_input = nn.Linear(input_size, 512)
-        self.fc_hidden = nn.Linear(512, 512)
-        self.fc_output = nn.Linear(512, output_size)
+#       !!!!!!!!!!!!!! Implement the network architecture !!!!!!!!!!!!!!
+# 
+#        self.fc_input = nn.Linear(input_size, ???)
+#        ...
+#        self.fc_output = nn.Linear( ??? , output_size)
 
 
     def forward(self, state):
@@ -35,10 +37,10 @@ class Network(nn.Module):
             torch tensor: Q-value
         """
 
-        x = F.relu(self.fc_input(state))
-        x = F.relu(self.fc_hidden(x))
-        q_values = self.fc_output(x)
-        return q_values
+#       !!!!!!!!!!!!!! Implement the input propagation through the network to get the Q-value !!!!!!!!!!!!!!        
+#
+#        q_values = ???
+#        return q_values
 
 
 class ReplayMemory(object):
@@ -81,7 +83,7 @@ class ReplayMemory(object):
 
 class Dqn():
     
-    def __init__(self, input_size, output_size, batch_size=128, gamma=0.99, F=1000, lr=3e-4, eps_start=1.0, eps_end=0.05, eps_decay=8000):
+    def __init__(self, input_size, output_size, batch_size=256, gamma=0.99, F=500, lr=1e-4, eps_start=0.9, eps_end=0.05, eps_decay=2000):
         """ Implements the deep Q-learning algorithm
 
         Args:
@@ -113,7 +115,7 @@ class Dqn():
 
         self.Q_net = Network(input_size, output_size).to(self.device)
         self.target_net = Network(input_size, output_size).to(self.device)
-        self.memory = ReplayMemory(200000)
+        self.memory = ReplayMemory(100000)
 
         self.output_size = output_size
         self.input_size = input_size
@@ -170,7 +172,8 @@ class Dqn():
         # We create batches containing only non None values.
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
                                           batch.next_state)), device=self.device, dtype=torch.bool)
-        non_final_next_states_list = [s for s in batch.next_state if s is not None]
+        non_final_next_states = torch.cat([s for s in batch.next_state
+                                                    if s is not None])
         state_batch = torch.cat(batch.state)
         action_batch = torch.cat(batch.action)
         reward_batch = torch.cat(batch.reward)
@@ -180,13 +183,13 @@ class Dqn():
         # Get Q-value for time t+1
         state_action_values = self.Q_net(state_batch).gather(1, action_batch)
         next_state_values = torch.zeros(batch_size, device=self.device)
-        if len(non_final_next_states_list) > 0:
-            non_final_next_states = torch.cat(non_final_next_states_list)
-            with torch.no_grad():
-                next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1).values
+        with torch.no_grad():
+            next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1).values
 
-        # Bellman target: r_t + gamma * max_a Q_target(s_{t+1}, a)
-        target = reward_batch + (self.gamma * next_state_values)
+#       !!!!!!!!!!!!!! Calculate target !!!!!!!!!!!!!!
+#
+#       target = 
+#       
 
 
         # Training the network by updating its weight
@@ -219,8 +222,13 @@ class Dqn():
         else:
             new_state = torch.tensor(observation, dtype=torch.float32, device=self.device).unsqueeze(0)
 
-        # Store transition (s_t, a_t, s_{t+1}, r_t) in replay memory.
-        self.memory.push(self.state, self.last_action, new_state, reward)
+
+
+#       !!!!!!!!!!!!!! Add the new state to memory !!!!!!!!!!!!!!
+#
+#       self.memory.push()
+#       self.state = ?
+#        
         
     
 
@@ -231,9 +239,10 @@ class Dqn():
 
 
 
-        # Periodically copy online network weights into target network.
-        if self.steps_done % self.F == 0:
-            self.target_net.load_state_dict(self.Q_net.state_dict())
+#        !!!!!!!!!!!!!! Update target network at some frequency F !!!!!!!!!!!!!!
+#        neural_net1.load_state_dict(neural_net2.state_dict()) -> Load weights of neural net2 in neural net1
+#
+#
 
 
 
