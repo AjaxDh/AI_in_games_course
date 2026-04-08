@@ -20,9 +20,9 @@ class Network(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
 
-        self.fc_input = nn.Linear(input_size, 256)
-        self.fc_hidden = nn.Linear(256, 256)
-        self.fc_output = nn.Linear(256, output_size)
+        self.fc_input = nn.Linear(input_size, 512)
+        self.fc_hidden = nn.Linear(512, 512)
+        self.fc_output = nn.Linear(512, output_size)
 
 
     def forward(self, state):
@@ -81,7 +81,7 @@ class ReplayMemory(object):
 
 class Dqn():
     
-    def __init__(self, input_size, output_size, batch_size=64, gamma=0.99, F=500, lr=1e-4, eps_start=1.0, eps_end=0.05, eps_decay=5000):
+    def __init__(self, input_size, output_size, batch_size=128, gamma=0.99, F=1000, lr=3e-4, eps_start=1.0, eps_end=0.05, eps_decay=8000):
         """ Implements the deep Q-learning algorithm
 
         Args:

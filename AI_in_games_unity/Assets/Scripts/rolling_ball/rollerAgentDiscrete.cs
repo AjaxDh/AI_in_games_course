@@ -125,30 +125,30 @@ public class rollerAgentDiscrete : Agent
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, target.localPosition);
 
         // Small time penalty to encourage faster solutions.
-        AddReward(-0.005f);
+        AddReward(-0.001f);
 
             // Getting closer or further from target
         if(distanceToTarget < lastDistanceToTarget)
         {
-            AddReward(0.02f);
+            AddReward(0.01f);
         }
         else
         {
-            AddReward(-0.02f);
+            AddReward(-0.01f);
         }
         lastDistanceToTarget = distanceToTarget;
         
             // Reached target
         if (distanceToTarget < 1.42f)
         {
-            SetReward(3.0f);
+            SetReward(2.0f);
             EndEpisode();
         }
         
             // Fell off platform
         if (this.transform.localPosition.y < 0)
         {
-            SetReward(-3f);
+            SetReward(-2f);
             EndEpisode();
         }
 
@@ -159,7 +159,7 @@ public class rollerAgentDiscrete : Agent
         
         if(this.StepCount >= 500)
         {
-            SetReward(-1.5f);
+            SetReward(-1.0f);
             EndEpisode();
         }
     }
