@@ -16,7 +16,7 @@ def main():
 	lr = 1e-4
 	eps_start = 1.0
 	eps_end = 0.05
-	eps_decay = 3000
+	eps_decay = 5000
 	n_episode = 300
 	
 
