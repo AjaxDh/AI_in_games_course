@@ -88,6 +88,16 @@ Source: `AI_in_games_unity/Assets/Scripts/rolling_ball/rollerAgentDiscrete.cs`
 - Priorite d'analyse: rewards et epsilon avant d'augmenter la complexite du reseau.
 - Lecture principale: une bonne courbe est une courbe qui monte sans spikes extremes trop frequents.
 
+## 7ter) Journal automatique et sauvegardes
+- Un journal automatique d'experimentation peut etre genere pendant les runs.
+- Sorties ajoutees dans `results/`:
+   - `rolling_ball_training_log.csv` pour les episodes
+   - `rolling_ball_run_summary.json` pour le resume du run
+   - `rolling_ball_experiment_journal.md` pour les notes lisibles
+   - `rolling_ball_episode_history.npz` pour les tableaux bruts
+   - `checkpoints/rolling_ball_ep_XXXX.pth` pour les sauvegardes periodiques du modele
+- Interet: ne pas perdre les resultats si le run est interrompu et garder un historique exploitable pour le rapport.
+
 ## 8) Journal des decisions recentes
 - Retour volontaire vers une base proche du prof.
 - Re-implementation stricte des TODO de l'exercice DQN.
@@ -95,6 +105,7 @@ Source: `AI_in_games_unity/Assets/Scripts/rolling_ball/rollerAgentDiscrete.cs`
 - Recompenses finalisees en echelle normalisee (`+1/-1`, timeout `-0.5`, shaping `+/-0.02`).
 - Interpretation actuelle: l'agent apprend, mais le rapport doit montrer comment chaque test corrige un probleme observe sur la courbe ou sur le temps de simulation.
 - Aucun resultat experimental final a consigner pour l'instant.
+- Ajout d'un protocole de journalisation automatique pour les prochains runs.
 
 ## 9) Checklist de reprise rapide
 - [ ] Unity ouvert, scene correcte, mode Play actif
