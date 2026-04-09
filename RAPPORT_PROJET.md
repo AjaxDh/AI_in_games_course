@@ -13,7 +13,7 @@ L'agent est entraine avec un algorithme Deep Q-Network (DQN), implante en Python
 ### Objectifs
 - Concevoir et completer un agent DQN fonctionnel.
 - Etudier l'impact des hyperparametres et des recompenses sur l'apprentissage.
-- Comparer 4 a 5 experiences avec configurations differentes.
+- Comparer 4 experiences avec configurations differentes.
 - Interpreter les resultats (performance, stabilite, limites).
 - Faire evoluer les objectifs au fil des experiences a partir des resultats observes.
 
@@ -61,15 +61,14 @@ $$
 
 ## Experiences
 
-> Consigne: lancer **4 a 5 experiences** avec des parametres differents.
+> Consigne: lancer **4 experiences** avec des parametres differents.
 
 ### Fil conducteur experimental
 Le rapport peut etre raconte comme une suite d'iterations:
 - Experience 1: base initiale apres completion des exercices.
 - Experience 2: ajustement pour reduire le lag et accelerer l'experience.
 - Experience 3: correction d'un sous-apprentissage ou d'une instabilite observee.
-- Experience 4: affinement pour rendre la courbe plus reguliere.
-- Experience 5 (optionnelle): validation finale de la configuration retenue.
+- Experience 4: affinement final et validation de la configuration retenue.
 
 ### Tableau recapitulatif des experiences
 
@@ -78,8 +77,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 | E1 (baseline) | 0.99 | 250 | 1e-4 | 0.9 / 0.05 / 2000 | 500 | 256 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
 | E2 | 0.99 | 150 | 7e-5 | 0.9 / 0.05 / 1500 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.7, max steps 400 | Reduire le temps de run et les spikes tout en limitant le risque de "circling" |
 | E3 | 0.99 | 220 | 1e-4 | 0.9 / 0.02 / 2000 | 300 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
-| E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
-| E5 (optionnel) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+| E4 (finale) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Valider le meilleur compromis stabilite/performance |
 
 ### Detail de chaque experience (a dupliquer)
 
@@ -148,23 +146,20 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Courbe reward plus lisible (moins de saturation autour des episodes coupes a 400).
   - Duree de run raisonnable (N=220) tout en laissant plus de temps d'apprentissage que E2.
 - **Resultats observes**:
-  - [ ]
+  - Le run est complet: `episodes_completed=220`, `total_steps=54110`, `run_total_seconds=1481.531`.
+  - Moyennes globales: `mean_episode_reward=0.5226`, `mean_episode_duration=245.95`, `mean_episode_elapsed_seconds=6.696`.
+  - Repartition des terminaisons:
+    - succes (`terminal_reward=1.0`): 123/220 (55.9%).
+    - timeout (`terminal_reward=-0.5`): 37/220 (16.8%).
+    - echec (`terminal_reward=-1.0`): 60/220 (27.3%).
+  - La courbe reward progresse globalement mais reste volatile, avec des spikes encore visibles.
 - **Interpretation rapide**:
-  - [ ]
+  - E3 corrige une partie des effets negatifs observes en E2.
+  - Le taux de succes remonte nettement (55.9% vs 42.0% en E2) et les timeouts baissent fortement (16.8% vs 39.33% en E2).
+  - E3 reste toutefois en dessous de E1 sur la performance globale (reward moyenne et regularite de convergence).
+  - Le compromis E3 est valide pour stabiliser sans exploser le cout de calcul, mais ne depasse pas encore la baseline E1.
 
-#### Experience E4 - A definir
-- **Choix des parametres**:
-  - [ ]
-- **Methodologie / reflexion / approche**:
-  - [ ]
-- **Attentes avant execution**:
-  - [ ]
-- **Resultats observes**:
-  - [ ]
-- **Interpretation rapide**:
-  - [ ]
-
-#### Experience E5 (optionnelle) - A definir
+#### Experience E4 - Finale (a definir)
 - **Choix des parametres**:
   - [ ]
 - **Methodologie / reflexion / approche**:
@@ -194,25 +189,26 @@ Cette section sert de synthese globale. Les details d'observation et d'interpret
 - **Ce qui a ete observe**:
   - Le temps total a bien baisse par rapport a E1, mais la qualite d'apprentissage a recule en moyenne sur E2.
   - Les spikes restent forts sur E2 et les episodes timeout restent frequents.
+  - E3 recupere une partie de la stabilite perdue en E2 (succes en hausse, timeouts en baisse), sans retrouver le niveau global de E1.
 - **Ecarts et surprises**:
   - Le couple timeout court/penalite forte semble avoir trop contraint la convergence; l'effet de `batch_size` ne doit pas etre sur-interprete sans isoler les changements.
   - Le lag percu depend aussi du contexte d'execution (focus terminal), pas seulement des hyperparametres RL.
 
 ### Tableau de comparaison finale
 
-| Critere | E1 | E2 | E3 | E4 | E5 |
-|---|---:|---:|---:|---:|---:|
-| Reward moyenne (fin de run) | 1.778 | 0.384 | [en cours] | [ ] | [ ] |
-| Reward moyenne lissee | Positive, stable en fin de run | Proche de 0, instable | [en cours] | [ ] | [ ] |
-| Duree moyenne episode | 190.256 | 276.68 | [en cours] | [ ] | [ ] |
-| Stabilite (spikes) | Moyenne | Faible (spikes frequents) | [en cours] | [ ] | [ ] |
-| Taux de succes (si mesure) | [non calcule explicitement] | 42.0% | [en cours] | [ ] | [ ] |
+| Critere | E1 | E2 | E3 | E4 |
+|---|---:|---:|---:|---:|
+| Reward moyenne (fin de run) | 1.778 | 0.384 | 0.523 | [ ] |
+| Reward moyenne lissee | Positive, stable en fin de run | Proche de 0, instable | Positive mais volatile (amelioration vs E2, inferieure a E1) | [ ] |
+| Duree moyenne episode | 190.256 | 276.68 | 245.95 | [ ] |
+| Stabilite (spikes) | Moyenne | Faible (spikes frequents) | Moyenne-faible (amelioration vs E2) | [ ] |
+| Taux de succes (si mesure) | [non calcule explicitement] | 42.0% | 55.9% | [ ] |
 
 ---
 
 ## Analyse
 
-Cette section propose une lecture transversale E1->E5, en complement des analyses locales deja faites dans chaque experience.
+Cette section propose une lecture transversale E1->E4, en complement des analyses locales deja faites dans chaque experience.
 
 ### Tendances identifiees
 - E1 fournit la meilleure base de stabilite globale dans l'etat actuel des tests.
@@ -248,7 +244,7 @@ Cette section propose une lecture transversale E1->E5, en complement des analyse
 - **Reponse aux objectifs initiaux**:
   - Objectif 1 (agent DQN fonctionnel): atteint.
   - Objectif 2 (etudier l'impact des parametres): en cours, avec enseignements clairs sur E1/E2.
-  - Objectif 3 (comparaison multi-experiences): en cours, E3/E4/E5 restent a finaliser.
+  - Objectif 3 (comparaison multi-experiences): en cours, E4 reste a finaliser comme derniere experience.
 - **Configuration recommandee**:
   - Configuration recommandee provisoire: celle d'E3 (`gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
 - **Ameliorations futures**:
