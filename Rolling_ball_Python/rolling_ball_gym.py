@@ -31,7 +31,7 @@ def main():
 	# Parameters
 	input_size = 9
 	output_size = 5
-	batch_size = 256
+	batch_size = 128
 	gamma = 0.99
 	F = 300
 	lr = 1e-4

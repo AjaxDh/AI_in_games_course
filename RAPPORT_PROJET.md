@@ -77,7 +77,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 |---|---:|---:|---:|---|---:|---:|---:|---|---|---|
 | E1 (baseline) | 0.99 | 250 | 1e-4 | 0.9 / 0.05 / 2000 | 500 | 256 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
 | E2 | 0.99 | 150 | 7e-5 | 0.9 / 0.05 / 1500 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.7, max steps 400 | Reduire le temps de run et les spikes tout en limitant le risque de "circling" |
-| E3 | 0.99 | 220 | 1e-4 | 0.9 / 0.02 / 2000 | 300 | 256 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
+| E3 | 0.99 | 220 | 1e-4 | 0.9 / 0.02 / 2000 | 300 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
 | E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E5 (optionnel) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 
@@ -131,14 +131,14 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Interpretation rapide**:
   - E2 a bien reduit le temps total de run par rapport a E1, mais au prix d'une baisse de qualite d'apprentissage (reward moyenne plus faible, episodes plus longs, nombreux timeouts).
   - La combinaison `eps_decay=1500` + `max steps=400` + `timeout=-0.7` parait trop contraignante pour converger proprement.
-  - La baisse de `batch_size` a pu augmenter le bruit d'apprentissage; comme le lag semble aussi lie aux conditions d'execution, E3 revient a `batch_size=256`.
+  - Le lag reste contraignant en pratique, donc E3 conserve un compromis `batch_size=128` et corrige d'abord les autres facteurs (timeout, epsilon final, nombre d'episodes).
 
 #### Experience E3 - Stabilisation apres E2
 - **Choix des parametres**:
-  - Hyperparametres Python: `gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
+  - Hyperparametres Python: `gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` conserve (anti-circling), terminal `+1/-1` conserve, timeout `-0.5` et limite episode `500` steps.
 - **Methodologie / reflexion / approche**:
-  - E3 corrige E2 avec une strategie conservative: ne pas toucher l'architecture du reseau et revenir a des valeurs plus stables deja observees (B=256, eps_decay=2000).
+  - E3 corrige E2 avec une strategie conservative: ne pas toucher l'architecture du reseau, conserver `eps_decay=2000` et retenir un compromis de calcul avec `B=128` pour eviter les ralentissements severes observes a `B=256`.
   - Le parametre `F` est abaisse de `500` a `300` pour synchroniser plus frequemment le target network, afin de reduire certaines oscillations observees en E2 sans introduire une rupture majeure de configuration.
   - `N` passe a `220` pour donner plus de temps d'apprentissage que E2 (150 episodes) sans revenir au cout complet de E1 (250 episodes).
   - `eps_end` passe de `0.05` a `0.02` pour reduire l'aleatoire en fin d'entrainement et stabiliser la politique finale.
@@ -195,7 +195,7 @@ Cette section sert de synthese globale. Les details d'observation et d'interpret
   - Le temps total a bien baisse par rapport a E1, mais la qualite d'apprentissage a recule en moyenne sur E2.
   - Les spikes restent forts sur E2 et les episodes timeout restent frequents.
 - **Ecarts et surprises**:
-  - La reduction de batch_size (256 -> 128) et le couple timeout court/penalite forte semblent avoir trop contraint la convergence.
+  - Le couple timeout court/penalite forte semble avoir trop contraint la convergence; l'effet de `batch_size` ne doit pas etre sur-interprete sans isoler les changements.
   - Le lag percu depend aussi du contexte d'execution (focus terminal), pas seulement des hyperparametres RL.
 
 ### Tableau de comparaison finale
@@ -250,7 +250,7 @@ Cette section propose une lecture transversale E1->E5, en complement des analyse
   - Objectif 2 (etudier l'impact des parametres): en cours, avec enseignements clairs sur E1/E2.
   - Objectif 3 (comparaison multi-experiences): en cours, E3/E4/E5 restent a finaliser.
 - **Configuration recommandee**:
-  - Configuration recommandee provisoire: celle d'E3 (`gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=256`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
+  - Configuration recommandee provisoire: celle d'E3 (`gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
 - **Ameliorations futures**:
   - Evaluer E3 sur au moins 2 runs pour mesurer la robustesse.
   - Fixer une seed pour reduire la variance inter-runs.
