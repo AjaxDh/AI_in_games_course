@@ -59,15 +59,6 @@ $$
 - **NN (taille reseau)**: capacite de representation, cout de calcul, risque d'instabilite.
 - **Rewards**: signal d'apprentissage (shaping + terminal rewards).
 
-### Comment raisonner sur les modifications
-- Si Unity devient lent au fil des episodes, reduire `N` ou la frequence de tests longs pour accelerer le cycle d'analyse.
-- Si la courbe reward montre beaucoup de spikes, verifier en premier les rewards et `lr`.
-- Si l'agent semble sous-apprendre, on peut augmenter la duree d'entrainement ou reduire plus lentement l'exploration.
-- Si l'agent apprend mais reste instable, on peut reduire `lr`, lisser les rewards, ou ajuster `F`.
-- Si le calcul devient trop couteux, garder les changements qui ont le plus d'impact sur l'apprentissage et limiter le reste.
-
----
-
 ## Experiences
 
 > Consigne: lancer **4 a 5 experiences** avec des parametres differents.
@@ -92,7 +83,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 
 ### Detail de chaque experience (a dupliquer)
 
-#### Experience E1 - [Titre]
+#### Experience E1 - Baseline de reference
 - **Choix des parametres**:
   - Configuration actuelle du projet (baseline): `gamma=0.99`, `N=250`, `lr=1e-4`, `epsilon=0.9/0.05/2000`, `F=500`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design: shaping `+0.02/-0.02`, terminal `+1/-1`, timeout `-0.5`.
@@ -113,7 +104,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Les spikes ne signifient pas un bug en soi; ils sont attendus dans un environnement stochastique avec exploration.
   - Le risque principal a surveiller est le "reward shaping farming" (l'agent gagne des points en tournant autour de la cible), ce qui motive une reduction du shaping et un timeout plus penalise en E2.
 
-#### Experience E2 - [Titre]
+#### Experience E2 - Compromis vitesse/stabilite
 - **Choix des parametres**:
   - Hyperparametres Python: `gamma=0.99`, `N=150`, `lr=7e-5`, `epsilon=0.9/0.05/1500`, `F=500`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` (au lieu de `+/-0.02`), terminal `+1/-1` conserve, timeout `-0.7` (au lieu de `-0.5`) et limite episode `400` steps (au lieu de `500`).
@@ -142,7 +133,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - La combinaison `eps_decay=1500` + `max steps=400` + `timeout=-0.7` parait trop contraignante pour converger proprement.
   - La baisse de `batch_size` a pu augmenter le bruit d'apprentissage; comme le lag semble aussi lie aux conditions d'execution, E3 revient a `batch_size=256`.
 
-#### Experience E3 - [Titre]
+#### Experience E3 - Stabilisation apres E2
 - **Choix des parametres**:
   - Hyperparametres Python: `gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` conserve (anti-circling), terminal `+1/-1` conserve, timeout `-0.5` et limite episode `500` steps.
@@ -161,7 +152,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Interpretation rapide**:
   - [ ]
 
-#### Experience E4 - [Titre]
+#### Experience E4 - A definir
 - **Choix des parametres**:
   - [ ]
 - **Methodologie / reflexion / approche**:
@@ -173,7 +164,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Interpretation rapide**:
   - [ ]
 
-#### Experience E5 (optionnelle) - [Titre]
+#### Experience E5 (optionnelle) - A definir
 - **Choix des parametres**:
   - [ ]
 - **Methodologie / reflexion / approche**:
@@ -189,44 +180,51 @@ Le rapport peut etre raconte comme une suite d'iterations:
 
 ## Resultats
 
+Cette section sert de synthese globale. Les details d'observation et d'interpretation sont documentes dans chaque experience.
+
 ### Resultats bruts
 - Figure 1: [courbe reward par episode]
 - Figure 2: [courbe duree par episode]
 - Figure 3 (optionnel): [moving average ou taux de succes]
 
-### Resultats attendus vs observes
+### Resultats attendus vs observes (synthese)
 - **Ce qui etait attendu**:
-  - [ ]
+  - E2 devait reduire le temps de run tout en conservant une stabilite acceptable de l'apprentissage.
+  - Le nombre de spikes devait diminuer avec un shaping plus faible et un lr plus prudent.
 - **Ce qui a ete observe**:
-  - [ ]
+  - Le temps total a bien baisse par rapport a E1, mais la qualite d'apprentissage a recule en moyenne sur E2.
+  - Les spikes restent forts sur E2 et les episodes timeout restent frequents.
 - **Ecarts et surprises**:
-  - [ ]
+  - La reduction de batch_size (256 -> 128) et le couple timeout court/penalite forte semblent avoir trop contraint la convergence.
+  - Le lag percu depend aussi du contexte d'execution (focus terminal), pas seulement des hyperparametres RL.
 
 ### Tableau de comparaison finale
 
 | Critere | E1 | E2 | E3 | E4 | E5 |
 |---|---:|---:|---:|---:|---:|
-| Reward moyenne (fin de run) | [ ] | [ ] | [ ] | [ ] | [ ] |
-| Reward moyenne lissee | [ ] | [ ] | [ ] | [ ] | [ ] |
-| Duree moyenne episode | [ ] | [ ] | [ ] | [ ] | [ ] |
-| Stabilite (spikes) | [ ] | [ ] | [ ] | [ ] | [ ] |
-| Taux de succes (si mesure) | [ ] | [ ] | [ ] | [ ] | [ ] |
+| Reward moyenne (fin de run) | 1.778 | 0.384 | [en cours] | [ ] | [ ] |
+| Reward moyenne lissee | Positive, stable en fin de run | Proche de 0, instable | [en cours] | [ ] | [ ] |
+| Duree moyenne episode | 190.256 | 276.68 | [en cours] | [ ] | [ ] |
+| Stabilite (spikes) | Moyenne | Faible (spikes frequents) | [en cours] | [ ] | [ ] |
+| Taux de succes (si mesure) | [non calcule explicitement] | 42.0% | [en cours] | [ ] | [ ] |
 
 ---
 
 ## Analyse
 
+Cette section propose une lecture transversale E1->E5, en complement des analyses locales deja faites dans chaque experience.
+
 ### Tendances identifiees
-- [Ex: gamma eleve -> meilleure vision long terme mais convergence plus lente]
-- [Ex: lr trop grand -> instabilite des courbes]
-- [Ex: eps_decay trop rapide -> blocage en politique sous-optimale]
-- [Ex: batch plus grand -> gradient plus stable mais apprentissage plus lent]
+- E1 fournit la meilleure base de stabilite globale dans l'etat actuel des tests.
+- E2 montre qu'une reduction simultanee de plusieurs contraintes (B plus petit, timeout plus court et plus penalise, eps_decay plus rapide) peut degrader la qualite d'apprentissage.
+- La sensibilite aux conditions de run (focus terminal / charge machine) est suffisante pour impacter le runtime et possiblement la perception de stabilite.
+- Le shaping reduit (+/-0.01) limite le risque de reward farming, mais ne suffit pas seul a garantir une convergence propre.
 
 ### Limites
-- Taille de l'echantillon (nombre de runs) [ ]
-- Variabilite due a l'alea (seed non fixee) [ ]
-- Sensibilite aux rewards shaping [ ]
-- Temps de calcul / vitesse simulation [ ]
+- Taille de l'echantillon: faible (E1 + E2 exploites pour l'instant).
+- Variabilite due a l'alea: seed non fixee et spawn cible aleatoire.
+- Sensibilite au reward shaping: forte, notamment sur l'equilibre entre guidance dense et succes terminal.
+- Temps de calcul / vitesse simulation: contrainte importante en execution CPU locale.
 - Certaines ameliorations de vitesse peuvent detruire de la stabilite, et inversement.
 
 ### Lecture des spikes
@@ -244,13 +242,20 @@ Le rapport peut etre raconte comme une suite d'iterations:
 ## Conclusion
 
 - **Synthese des resultats**:
-  - [Resume en 4-6 lignes]
+  - E1 reste la reference la plus stable a ce stade, avec une reward moyenne nettement positive et une duree d'episode plus faible.
+  - E2 a bien atteint l'objectif de reduction du temps de run, mais avec une degradation de la qualite d'apprentissage et une forte variabilite.
+  - E3 est defini comme une correction ciblant la stabilite sans changer l'architecture reseau.
 - **Reponse aux objectifs initiaux**:
-  - [Objectif 1 atteint? Objectif 2? Objectif 3?]
+  - Objectif 1 (agent DQN fonctionnel): atteint.
+  - Objectif 2 (etudier l'impact des parametres): en cours, avec enseignements clairs sur E1/E2.
+  - Objectif 3 (comparaison multi-experiences): en cours, E3/E4/E5 restent a finaliser.
 - **Configuration recommandee**:
-  - [Parametres finaux retenus]
+  - Configuration recommandee provisoire: celle d'E3 (`gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=256`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
 - **Ameliorations futures**:
-  - [Ex: Double DQN, prioritized replay, recompenses mieux faconnees, evaluation sur plusieurs seeds]
+  - Evaluer E3 sur au moins 2 runs pour mesurer la robustesse.
+  - Fixer une seed pour reduire la variance inter-runs.
+  - Tester une evolution algorithmique legere (Double DQN) si la stabilite reste insuffisante.
+  - Passer sur build Unity plus leger si possible pour reduire l'impact des contraintes machine.
 
 ### Phrase de synthese type
 L'analyse doit montrer comment chaque experience modifie la suivante: le projet est donc un processus d'optimisation iterative, pas seulement une comparaison de chiffres.
