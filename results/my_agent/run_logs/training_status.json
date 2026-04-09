@@ -2,22 +2,22 @@
     "car_agent": {
         "checkpoints": [
             {
-                "steps": 84375,
-                "file_path": "results\\my_agent\\car_agent\\car_agent-84375.onnx",
-                "reward": 0.0,
-                "creation_time": 1775762922.5025213,
+                "steps": 3125,
+                "file_path": "results\\my_agent\\car_agent\\car_agent-3125.onnx",
+                "reward": -2.5014721393585204,
+                "creation_time": 1775767466.6054657,
                 "auxillary_file_paths": [
-                    "results\\my_agent\\car_agent\\car_agent-84375.pt"
+                    "results\\my_agent\\car_agent\\car_agent-3125.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 84375,
+            "steps": 3125,
             "file_path": "results\\my_agent\\car_agent.onnx",
-            "reward": 0.0,
-            "creation_time": 1775762922.5025213,
+            "reward": -2.5014721393585204,
+            "creation_time": 1775767466.6054657,
             "auxillary_file_paths": [
-                "results\\my_agent\\car_agent\\car_agent-84375.pt"
+                "results\\my_agent\\car_agent\\car_agent-3125.pt"
             ]
         }
     },

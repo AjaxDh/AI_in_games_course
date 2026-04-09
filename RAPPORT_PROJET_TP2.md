@@ -73,42 +73,67 @@ Si le batch size augmente, l'optimisation utilise plus d'observations, donc les 
 Le premier run sert de baseline.
 Il faut garder la configuration par defaut, lancer l'entrainement sur la scene track1, puis commenter les courbes obtenues sans modifier trop de choses.
 
+### Convention de nommage des runs
+- E1: `Experience1`
+- E2: `Experience2`
+- E3: `Experience3`
+
+Exemple de lancement E1:
+
+```bash
+mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
+```
+
 ---
 
 ## Experiences
 
-> Consigne: faire 4 experiences maximum, pas besoin d'aller trop loin.
+> Consigne: faire 3 experiences maximum, pas besoin d'aller trop loin.
 
 ### Tableau rapide
 
 | Experience | Batch size | lr | Epsilon | Beta | Lambda | Num epoch | Attente principale |
 |---|---:|---:|---:|---:|---:|---:|---|
 | E1 | 512 | 3e-4 | 0.2 | 0.005 | 0.95 | 3 | Baseline |
-| E2 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Tester un changement simple |
-| E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Corriger le point faible observe |
-| E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Valider la meilleure config |
+| E2 | 1024 | 1.5e-4 | 0.15 | 0.003 | 0.95 | 3 | Conduite plus stable (moins de crash) et tour plus rapide |
+| E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Corriger le point faible observe et valider le meilleur compromis |
 
 ### Structure courte pour chaque experience
 
 #### Experience E1
 - **Choix des parametres**: batch size 512, learning rate 3e-4, epsilon 0.2, beta 0.005, lambda 0.95, num epoch 3.
 - **Ce qu'on teste**: la baseline PPO sur track1.
-- **Resultats observes**: [reward, episode length, entropy, policy loss, value loss]
-- **Interpretation**: [resume court sur la stabilite et le comportement du car agent]
+- **Resultats observes**:
+	- Run lance avec `--run-id=Experience1`.
+	- La courbe `Environment/Cumulative Reward` monte globalement tout le long du run.
+	- D'apres l'export JSON, la valeur passe d'environ `-2.57` au debut a un pic proche de `65.22` (step `545000`), puis termine vers `54.51` (step `555000`) apres un dip suivi d'une remontee.
+	- `Environment/Episode Length` reste bruitee et souvent proche du plafond (`624`), avec quelques baisses ponctuelles (par exemple autour de `453` au step `80000`).
+	- `Losses/Policy Loss` oscille dans une plage assez stable, globalement entre `0.027` et `0.045`.
+	- `Losses/Value Loss` augmente progressivement (d'environ `0.007` au debut jusqu'a ~`1.10` en fin de run), avec des fluctuations.
+	- Test en inference apres entrainement: premier essai en echec (collision mur), deuxieme essai valide en `23.26 s` pour un tour.
+- **Interpretation**: la baseline apprend bien (reward en hausse nette), mais l'agent n'est pas encore regulier. La longueur d'episode souvent elevee et le premier crash en inference montrent qu'il y a encore un manque de robustesse. Le policy loss reste raisonnable, alors que le value loss qui grimpe suggere que le critic suit plus difficilement quand les retours deviennent plus eleves.
+- **Duree du run**: environ `46 minutes`.
+- **Critere d'arret**: arret manuel apres un dip qui a ete re-egalise, avec une courbe reward qui restait globalement ascendante.
 
 #### Experience E2
-- **Choix des parametres**: [ ]
-- **Ce qu'on teste**: [ ]
-- **Resultats observes**: [ ]
-- **Interpretation**: [ ]
+- **Choix des parametres**:
+	- `batch_size`: `512 -> 1024`
+	- `learning_rate`: `3e-4 -> 1.5e-4`
+	- `epsilon` (PPO clip): `0.2 -> 0.15`
+	- `beta` (entropy): `0.005 -> 0.003`
+	- `lambda` et `num_epoch` inchanges (`0.95`, `3`)
+- **Ce qu'on teste**:
+	- Objectif E2: garder la progression reward de E1, mais rendre la conduite plus propre et plus reguliere.
+	- Cible pratique: moins de collisions en inference et un temps moyen de tour plus bas.
+- **Pourquoi ces changements**:
+	- `batch_size` plus grand pour lisser les gradients et limiter les comportements erratiques.
+	- `learning_rate` plus bas pour eviter des mises a jour trop agressives (E1 montrait une variance notable).
+	- `epsilon` plus petit pour rendre les updates PPO plus prudentes, donc plus stables.
+	- `beta` legerement reduit pour diminuer le cote trop aleatoire en fin d'apprentissage et gagner en trajectoire propre.
+- **Resultats observes**: [a completer apres run E2]
+- **Interpretation**: [a completer apres run E2]
 
 #### Experience E3
-- **Choix des parametres**: [ ]
-- **Ce qu'on teste**: [ ]
-- **Resultats observes**: [ ]
-- **Interpretation**: [ ]
-
-#### Experience E4
 - **Choix des parametres**: [ ]
 - **Ce qu'on teste**: [ ]
 - **Resultats observes**: [ ]
@@ -134,14 +159,14 @@ Il faut garder la configuration par defaut, lancer l'entrainement sur la scene t
 
 ### Comparaison finale
 
-| Critere | E1 | E2 | E3 | E4 |
-|---|---:|---:|---:|---:|
-| Reward moyenne | [ ] | [ ] | [ ] | [ ] |
-| Episode length moyenne | [ ] | [ ] | [ ] | [ ] |
-| Entropy | [ ] | [ ] | [ ] | [ ] |
-| Policy loss | [ ] | [ ] | [ ] | [ ] |
-| Value loss | [ ] | [ ] | [ ] | [ ] |
-| Taux de succes | [ ] | [ ] | [ ] | [ ] |
+| Critere | E1 | E2 | E3 |
+|---|---:|---:|---:|
+| Reward moyenne | 54.51 (step 555k, cumulative reward card) | [ ] | [ ] |
+| Episode length moyenne | Souvent haute (proche 624), avec chutes ponctuelles | [ ] | [ ] |
+| Entropy | Non exportee pour E1 | [ ] | [ ] |
+| Policy loss | Oscille env. 0.027 -> 0.045 (plutot stable) | [ ] | [ ] |
+| Value loss | Monte env. 0.007 -> 1.106 (critic plus instable) | [ ] | [ ] |
+| Taux de succes | 1/2 tests inference (1 crash, 1 tour valide) | [ ] | [ ] |
 
 ---
 
@@ -152,6 +177,9 @@ Il faut garder la configuration par defaut, lancer l'entrainement sur la scene t
 - L'effet du learning rate.
 - La stabilite des courbes.
 - La difference entre performance et vitesse de calcul.
+- Le temps d'entrainement par experience.
+- Le temps moyen pour finir le trajet en inference (5 essais conseilles).
+- Le nombre de crashs sur 5 essais inference (metrique de robustesse).
 
 ### Limites
 - Un seul run par configuration.
@@ -160,9 +188,9 @@ Il faut garder la configuration par defaut, lancer l'entrainement sur la scene t
 - Influence possible du reward shaping.
 
 ### Bilan court
-- Ce qui marche.
-- Ce qui reste instable.
-- Ce qu'on garde comme meilleure configuration.
+- Ce qui marche: la reward cumulative monte clairement sur E1.
+- Ce qui reste instable: episodes souvent longs, value loss en hausse, et un crash observe en inference.
+- Ce qu'on garde comme meilleure configuration: a confirmer apres E2 et E3, mais E1 est une baseline exploitable.
 
 ---
 
@@ -178,8 +206,17 @@ Il faut garder la configuration par defaut, lancer l'entrainement sur la scene t
 
 ### Lancement
 ```bash
-mlagents-learn results/configuration_example.yaml --run-id=my_agent --force
+mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 ```
 
 ### Rappel
-Dans la console, la commande peut aussi produire `results/my_agent/configuration.yaml`.
+Dans la console, chaque run cree son propre dossier de resultats, par exemple `results/Experience1`.
+
+### TensorBoard
+```bash
+tensorboard --logdir "C:\Users\Ajax\AI_in_games_course\results" --port 6006
+```
+
+### Test du modele dans Unity
+- Utiliser le fichier modele `.onnx` du run (par exemple `results/Experience1/car_agent.onnx`).
+- Le glisser dans le champ `Model` des Behavior Parameters de l'agent.

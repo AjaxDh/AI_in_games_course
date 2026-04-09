@@ -53,7 +53,7 @@ Source: `results/configuration_example.yaml`
 3. Launch training from the terminal:
 
 ```bash
-mlagents-learn results/configuration_example.yaml --run-id=my_agent --force
+mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 ```
 
 4. Press Play in Unity.
@@ -63,6 +63,36 @@ mlagents-learn results/configuration_example.yaml --run-id=my_agent --force
 - Keep the baseline configuration for the first run.
 - Record the first curves before changing anything.
 - For the report, describe the baseline behaviour and the first observations only.
+
+## Suggested scope
+- Do 3 runs in total: E1 baseline, E2 simple change, E3 final compromise.
+- Keep the changes small so the comparison stays readable.
+
+## E2 objective (recommended)
+- Drive faster and cleaner: reduce crashes and improve average lap time.
+- Measure on 5 inference attempts:
+	- average lap time,
+	- number of crashes,
+	- number of completed laps.
+
+## E2 parameter proposal
+- `batch_size`: `1024`
+- `learning_rate`: `1.5e-4`
+- `epsilon`: `0.15`
+- `beta`: `0.003`
+- Keep `lambd=0.95` and `num_epoch=3`.
+
+Rationale:
+- Larger batch plus lower learning rate generally improves update stability.
+- Lower epsilon clip reduces aggressive policy jumps.
+- Slightly lower beta reduces random behavior and helps avoid wall crashes.
+
+## Run naming (recommended)
+- E1: `--run-id=Experience1`
+- E2: `--run-id=Experience2`
+- E3: `--run-id=Experience3`
+
+Using a different run id for each experiment avoids overwriting previous results and makes TensorBoard comparison easier.
 
 ## What to compare between runs
 - Success rate.
@@ -77,6 +107,34 @@ mlagents-learn results/configuration_example.yaml --run-id=my_agent --force
 - Car crashing or leaving the road.
 - Reward curve after E1.
 - Episode length curve after E1.
+
+## When to stop a run
+- Use TensorBoard to monitor the run.
+- For E1, stop when cumulative reward has clearly improved and starts to plateau, or when extra runtime gives little visible gain.
+- Practical stop method: press `Ctrl+C` in the `mlagents-learn` terminal, then stop Play in Unity.
+
+## Timing to record in the report
+- Start time.
+- End time.
+- Total duration.
+- Final step and short note on observed behaviour.
+
+## TensorBoard
+- Compare all runs:
+
+```bash
+tensorboard --logdir "C:\Users\Ajax\AI_in_games_course\results" --port 6006
+```
+
+- Show only E1:
+
+```bash
+tensorboard --logdir "C:\Users\Ajax\AI_in_games_course\results\Experience1" --port 6006
+```
+
+## After training
+- The model to test in Unity is the `.onnx` file from the run folder (typically `results/Experience1/car_agent.onnx`).
+- Drag this file into the agent Behavior Parameters `Model` field and run the scene in inference mode.
 
 ## Short analysis rule
 - If batch size is larger: training updates are heavier, but gradients are usually more stable.
