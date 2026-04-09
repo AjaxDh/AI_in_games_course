@@ -28,6 +28,11 @@ Chaque experience modifie donc l'objectif de la suivante.
 - Cible Bellman a `t+1` calculee dans `learn()`.
 - Synchronisation periodique du target network active.
 
+### Etat experimental actuel
+- Aucune experience n'a encore ete lancee apres la derniere remise a plat.
+- Le rapport doit donc rester un template vierge pour les sections E1 a E5.
+- Les prochaines analyses devront partir du premier run reel, pas d'un resultat pre-rempli.
+
 ### Hyperparametres actifs
 Source: `Rolling_ball_Python/rolling_ball_gym.py` et `Rolling_ball_Python/rolling_ball_DQN.py`
 
@@ -89,6 +94,7 @@ Source: `AI_in_games_unity/Assets/Scripts/rolling_ball/rollerAgentDiscrete.cs`
 - Modifications legeres seulement pour l'etape 3.
 - Recompenses finalisees en echelle normalisee (`+1/-1`, timeout `-0.5`, shaping `+/-0.02`).
 - Interpretation actuelle: l'agent apprend, mais le rapport doit montrer comment chaque test corrige un probleme observe sur la courbe ou sur le temps de simulation.
+- Aucun resultat experimental final a consigner pour l'instant.
 
 ## 9) Checklist de reprise rapide
 - [ ] Unity ouvert, scene correcte, mode Play actif

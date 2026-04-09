@@ -94,66 +94,63 @@ Le rapport peut etre raconte comme une suite d'iterations:
 
 #### Experience E1 - [Titre]
 - **Choix des parametres**:
-  - Configuration de base proche du cours.
-  - Point de depart pour observer la dynamique initiale de l'agent.
+  - [ ]
 - **Methodologie / reflexion / approche**:
-  - On conserve une configuration simple pour etablir une reference de comparaison.
+  - [ ]
 - **Attentes avant execution**:
-  - Courbe encore bruitée, episodes longs, agent fortement exploratoire.
+  - [ ]
 - **Resultats observes**:
   - [A completer avec le plot]
 - **Interpretation rapide**:
-  - [A completer]
+  - [ ]
 
 #### Experience E2 - [Titre]
 - **Choix des parametres**:
-  - Premiere modification pour reduire le temps d'attente et le cout de simulation.
-  - Ajustement de certains parametres pour voir si l'agent converge plus vite.
+  - [ ]
 - **Methodologie / reflexion / approche**:
-  - On change peu de variables a la fois afin d'identifier l'effet principal.
+  - [ ]
 - **Attentes avant execution**:
-  - Unity doit moins ramer, et l'entrainement doit devenir plus rapide a evaluer.
-  - Risque: sous-apprentissage si la duree est trop reduite.
+  - [ ]
 - **Resultats observes**:
-  - [A completer avec le plot]
+  - [ ]
 - **Interpretation rapide**:
-  - [A completer: par exemple courbe plus rapide mais spikes encore presents]
+  - [ ]
 
 #### Experience E3 - [Titre]
 - **Choix des parametres**:
-  - Ajustement cible pour corriger ce que l'experience 2 a revele.
+  - [ ]
 - **Methodologie / reflexion / approche**:
-  - L'hypothese testee est precise: stabiliser l'apprentissage ou reduire l'instabilite.
+  - [ ]
 - **Attentes avant execution**:
-  - Courbes moins chaotiques, reward plus coherent sur la duree.
+  - [ ]
 - **Resultats observes**:
-  - [A completer avec le plot]
+  - [ ]
 - **Interpretation rapide**:
-  - [A completer]
+  - [ ]
 
 #### Experience E4 - [Titre]
 - **Choix des parametres**:
-  - Affinage final base sur les tendances deja identifiees.
+  - [ ]
 - **Methodologie / reflexion / approche**:
-  - On garde les elements qui fonctionnent et on limite les sources de bruit.
+  - [ ]
 - **Attentes avant execution**:
-  - Stabilite plus forte et progression plus reguliere.
+  - [ ]
 - **Resultats observes**:
-  - [A completer avec le plot]
+  - [ ]
 - **Interpretation rapide**:
-  - [A completer]
+  - [ ]
 
 #### Experience E5 (optionnelle) - [Titre]
 - **Choix des parametres**:
-  - Variante finale pour valider la meilleure configuration.
+  - [ ]
 - **Methodologie / reflexion / approche**:
-  - [A completer]
+  - [ ]
 - **Attentes avant execution**:
-  - [A completer]
+  - [ ]
 - **Resultats observes**:
-  - [A completer]
+  - [ ]
 - **Interpretation rapide**:
-  - [A completer]
+  - [ ]
 
 ---
 
@@ -227,21 +224,3 @@ L'analyse doit montrer comment chaque experience modifie la suivante: le projet 
 
 ---
 
-## Annexes (optionnel)
-
-### A. Configuration logicielle
-- Version Unity: [ ]
-- Version Python: [ ]
-- Librairies: `torch`, `mlagents_envs`, `numpy`, `matplotlib`
-
-### B. Commandes de lancement
-```bash
-# Unity: lancer la scene rolling_ball_gym puis Play
-# Python:
-python Rolling_ball_Python/rolling_ball_gym.py
-```
-
-### C. Journal de runs (court)
-| Date | Experience | Duree run | Observation cle |
-|---|---|---|---|
-| [ ] | [ ] | [ ] | [ ] |
