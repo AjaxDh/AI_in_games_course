@@ -40,14 +40,14 @@ Source: `Rolling_ball_Python/rolling_ball_gym.py` et `Rolling_ball_Python/rollin
 |---|---|
 | `input_size` | `9` |
 | `output_size` | `5` |
-| `batch_size` | `128` |
+| `batch_size` | `256` |
 | `gamma` | `0.99` |
 | `F` | `500` |
 | `lr` | `1e-4` |
 | `eps_start` | `0.9` |
 | `eps_end` | `0.05` |
-| `eps_decay` | `3000` |
-| `n_episode` | `300` |
+| `eps_decay` | `2000` |
+| `n_episode` | `250` |
 
 ### Reward design active (agent discret)
 Source: `AI_in_games_unity/Assets/Scripts/rolling_ball/rollerAgentDiscrete.cs`

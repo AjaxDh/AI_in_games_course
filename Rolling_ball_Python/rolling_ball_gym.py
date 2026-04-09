@@ -24,21 +24,21 @@ LOG_CSV_PATH = os.path.join(RESULTS_DIR, "rolling_ball_training_log.csv")
 JOURNAL_PATH = os.path.join(RESULTS_DIR, "rolling_ball_experiment_journal.md")
 SUMMARY_JSON_PATH = os.path.join(RESULTS_DIR, "rolling_ball_run_summary.json")
 HISTORY_NPZ_PATH = os.path.join(RESULTS_DIR, "rolling_ball_episode_history.npz")
-CHECKPOINT_EVERY = 25
+CHECKPOINT_EVERY = 0
 
 
 def main():
 	# Parameters
 	input_size = 9
 	output_size = 5
-	batch_size = 128
+	batch_size = 256
 	gamma = 0.99
 	F = 500
 	lr = 1e-4
 	eps_start = 0.9
 	eps_end = 0.05
-	eps_decay = 3000
-	n_episode = 300
+	eps_decay = 2000
+	n_episode = 250
 
 	os.makedirs(RESULTS_DIR, exist_ok=True)
 	os.makedirs(CHECKPOINT_DIR, exist_ok=True)
@@ -49,6 +49,7 @@ def main():
 	paused = False
 
 	print("Starting simulation. Press the Play button in Unity editor")
+	print("Controls: Ctrl+P to pause/resume")
 	unity_env = UnityEnvironment(file_name=None)
 	gym = UnityToGymWrapper(unity_env=unity_env, allow_multiple_obs=True)
 
@@ -76,15 +77,9 @@ def main():
 			episode_start_perf = time.perf_counter()
 			episode_reward = 0.0
 			while True:
-				paused, should_quit = poll_training_controls(paused)
-				if should_quit:
-					print("Training interrupted by user.")
-					break
+				paused = poll_training_controls(paused)
 				if paused:
-					should_quit = wait_while_paused()
-					if should_quit:
-						print("Training interrupted by user while paused.")
-						break
+					wait_while_paused()
 					episode_start_perf = time.perf_counter()
 
 				# Advance one step in the environment
@@ -109,15 +104,12 @@ def main():
 					total_episode += 1
 					print(f"Episode: {nb_episode} / Step: {total_steps} / Episode reward: {episode_reward:.3f} / Duration: {step} / Elapsed: {episode_elapsed[-1]:.1f}s")
 					append_episode_log(LOG_CSV_PATH, run_started_at, nb_episode, total_steps, episode_reward, step, episode_elapsed[-1], reward)
-					if nb_episode % CHECKPOINT_EVERY == 0:
+					if CHECKPOINT_EVERY > 0 and nb_episode % CHECKPOINT_EVERY == 0:
 						brain.save()
 						checkpoint_path = os.path.join(CHECKPOINT_DIR, f"rolling_ball_ep_{nb_episode:04d}.pth")
 						shutil.copy2("last_brain.pth", checkpoint_path)
 					step = 0
 					break
-
-			if should_quit:
-				break
 
 	finally:
 		if gym is not None:
@@ -170,35 +162,31 @@ def plot_reward_history(rewards, durations, steps):
 def poll_training_controls(paused):
 	"""Poll keyboard controls during training.
 
-	Space toggles pause/resume. Q requests a clean stop.
+	Ctrl+P toggles pause/resume.
 	"""
 	if not HAS_MSVCRT:
-		return paused, False
+		return paused
 
-	should_quit = False
 	while msvcrt.kbhit():
 		key = msvcrt.getch()
-		if key in (b' ', b'p', b'P'):
+		# Ctrl+P sends ASCII 0x10 in Windows terminals.
+		if key == b'\x10':
 			paused = not paused
-		elif key in (b'q', b'Q'):
-			should_quit = True
-	return paused, should_quit
+	return paused
 
 
 def wait_while_paused():
-	"""Block while paused until the user presses Space again."""
+	"""Block while paused until the user presses Ctrl+P again."""
 	if not HAS_MSVCRT:
-		return False
+		return
 
 	paused = True
-	print("Training paused. Press Space to resume or Q to quit.")
+	print("Training paused. Press Ctrl+P to resume.")
 	while paused:
-		paused, should_quit = poll_training_controls(paused)
-		if should_quit:
-			return True
+		paused = poll_training_controls(paused)
 		time.sleep(0.1)
 	print("Training resumed.")
-	return False
+	return
 
 
 def append_episode_log(csv_path, run_started_at, episode_index, total_steps, reward_value, duration, elapsed_seconds, last_step_reward):
