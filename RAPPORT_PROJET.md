@@ -159,7 +159,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - E3 reste toutefois en dessous de E1 sur la performance globale (reward moyenne et regularite de convergence).
   - Le compromis E3 est valide pour stabiliser sans exploser le cout de calcul, mais ne depasse pas encore la baseline E1.
 
-#### Experience E4 - Finale (a definir)
+#### Experience E4 - Finale (validation du compromis)
 - **Choix des parametres**:
   - Configuration finale de validation: `gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01`, terminal `+1/-1`, timeout `-0.5`, limite episode `500` steps.
@@ -168,9 +168,17 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Attentes avant execution**:
   - Verifier si une baisse du learning rate et un temps d'apprentissage plus long reduisent les oscillations sans detruire le taux de succes.
 - **Resultats observes**:
-  - [ ]
+  - Le run final est complet: `episodes_completed=250`, `total_steps=63588`, `run_total_seconds=1396.504`.
+  - Moyennes globales: `mean_episode_reward=0.9013`, `mean_episode_duration=254.352`, `mean_episode_elapsed_seconds=5.5687`.
+  - Repartition des terminaisons:
+    - succes (`terminal_reward=1.0`): 152/250 (60.8%).
+    - timeout (`terminal_reward=-0.5`): 39/250 (15.6%).
+    - echec (`terminal_reward=-1.0`): 59/250 (23.6%).
+  - La courbe reward reste variable, mais la fin de run est plus lisible que E3 avec moins de spikes marquants.
 - **Interpretation rapide**:
-  - [ ]
+  - E4 ameliore nettement E3 sur la reward moyenne et le taux de succes, tout en conservant un taux de timeout bas.
+  - Le compromis vise (stabilite sans effondrement des performances) est globalement atteint.
+  - E4 ne depasse pas E1 en performance brute, mais offre un equilibre plus prudent et plus robuste que E2/E3.
 
 ---
 
@@ -191,6 +199,7 @@ Cette section sert de synthese globale. Les details d'observation et d'interpret
   - Le temps total a bien baisse par rapport a E1, mais la qualite d'apprentissage a recule en moyenne sur E2.
   - Les spikes restent forts sur E2 et les episodes timeout restent frequents.
   - E3 recupere une partie de la stabilite perdue en E2 (succes en hausse, timeouts en baisse), sans retrouver le niveau global de E1.
+  - E4 confirme une amelioration supplementaire vs E3 (reward moyenne 0.901 vs 0.523, succes 60.8% vs 55.9%), avec une fin de run visuellement moins erratique.
 - **Ecarts et surprises**:
   - Le couple timeout court/penalite forte semble avoir trop contraint la convergence; l'effet de `batch_size` ne doit pas etre sur-interprete sans isoler les changements.
   - Le lag percu depend aussi du contexte d'execution (focus terminal), pas seulement des hyperparametres RL.
@@ -199,11 +208,11 @@ Cette section sert de synthese globale. Les details d'observation et d'interpret
 
 | Critere | E1 | E2 | E3 | E4 |
 |---|---:|---:|---:|---:|
-| Reward moyenne (fin de run) | 1.778 | 0.384 | 0.523 | [ ] |
-| Reward moyenne lissee | Positive, stable en fin de run | Proche de 0, instable | Positive mais volatile (amelioration vs E2, inferieure a E1) | [ ] |
-| Duree moyenne episode | 190.256 | 276.68 | 245.95 | [ ] |
-| Stabilite (spikes) | Moyenne | Faible (spikes frequents) | Moyenne-faible (amelioration vs E2) | [ ] |
-| Taux de succes (si mesure) | [non calcule explicitement] | 42.0% | 55.9% | [ ] |
+| Reward moyenne (fin de run) | 1.778 | 0.384 | 0.523 | 0.901 |
+| Reward moyenne lissee | Positive, stable en fin de run | Proche de 0, instable | Positive mais volatile (amelioration vs E2, inferieure a E1) | Positive, plus reguliere en fin de run (amelioration vs E3) |
+| Duree moyenne episode | 190.256 | 276.68 | 245.95 | 254.352 |
+| Stabilite (spikes) | Moyenne | Faible (spikes frequents) | Moyenne-faible (amelioration vs E2) | Moyenne (moins de spikes en fin de run vs E3) |
+| Taux de succes (si mesure) | 72.4% | 42.0% | 55.9% | 60.8% |
 
 ---
 
@@ -214,11 +223,12 @@ Cette section propose une lecture transversale E1->E4, en complement des analyse
 ### Tendances identifiees
 - E1 fournit la meilleure base de stabilite globale dans l'etat actuel des tests.
 - E2 montre qu'une reduction simultanee de plusieurs contraintes (B plus petit, timeout plus court et plus penalise, eps_decay plus rapide) peut degrader la qualite d'apprentissage.
+- E4 ameliore le compromis obtenu en E3: meilleure reward moyenne, meilleur taux de succes, et fin de run moins erratique.
 - La sensibilite aux conditions de run (focus terminal / charge machine) est suffisante pour impacter le runtime et possiblement la perception de stabilite.
 - Le shaping reduit (+/-0.01) limite le risque de reward farming, mais ne suffit pas seul a garantir une convergence propre.
 
 ### Limites
-- Taille de l'echantillon: faible (E1 + E2 exploites pour l'instant).
+- Taille de l'echantillon: encore limitee (un run principal par configuration).
 - Variabilite due a l'alea: seed non fixee et spawn cible aleatoire.
 - Sensibilite au reward shaping: forte, notamment sur l'equilibre entre guidance dense et succes terminal.
 - Temps de calcul / vitesse simulation: contrainte importante en execution CPU locale.
@@ -242,13 +252,14 @@ Cette section propose une lecture transversale E1->E4, en complement des analyse
   - E1 reste la reference la plus stable a ce stade, avec une reward moyenne nettement positive et une duree d'episode plus faible.
   - E2 a bien atteint l'objectif de reduction du temps de run, mais avec une degradation de la qualite d'apprentissage et une forte variabilite.
   - E3 est defini comme une correction ciblant la stabilite sans changer l'architecture reseau.
-  - E4 sert de validation finale avec un apprentissage plus prudent pour tenter de lisser les spikes residuels.
+  - E4 valide le compromis final: progression nette par rapport a E2/E3, et fin de run plus stable, sans toutefois depasser E1 en performance brute.
 - **Reponse aux objectifs initiaux**:
   - Objectif 1 (agent DQN fonctionnel): atteint.
-  - Objectif 2 (etudier l'impact des parametres): en cours, avec enseignements clairs sur E1/E2.
-  - Objectif 3 (comparaison multi-experiences): en cours, E4 reste la derniere experience a executer pour valider le compromis final.
+  - Objectif 2 (etudier l'impact des parametres): atteint, avec un effet clair des changements sur succes, timeouts et stabilite.
+  - Objectif 3 (comparaison multi-experiences): atteint, les 4 experiences ont ete executees et comparees.
 - **Configuration recommandee**:
-  - Configuration recommandee provisoire: celle d'E4 (`gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
+  - Pour un compromis performance/stabilite: configuration E4 (`gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
+  - Pour la meilleure performance brute observee sur ce projet: configuration E1.
 - **Ameliorations futures**:
   - Evaluer E3 sur au moins 2 runs pour mesurer la robustesse.
   - Fixer une seed pour reduire la variance inter-runs.
