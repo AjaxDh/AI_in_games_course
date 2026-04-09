@@ -95,8 +95,8 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 | Experience | Batch size | lr | Epsilon | Beta | Lambda | Num epoch | Attente principale |
 |---|---:|---:|---:|---:|---:|---:|---|
 | E1 | 512 | 3e-4 | 0.2 | 0.005 | 0.95 | 3 | Baseline |
-| E2 | 1024 | 1.5e-4 | 0.15 | 0.003 | 0.95 | 3 | Conduite plus stable (moins de crash) et tour plus rapide |
-| E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Corriger le point faible observe et valider le meilleur compromis |
+| E2 | 1024 | 1.5e-4 | 0.15 | 0.003 | 0.95 | 3 | Reward finale plus elevee mais moins stable |
+| E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Corriger l'instabilite de E2 en gardant apprentissage rapide |
 
 ### Structure courte pour chaque experience
 
@@ -130,8 +130,14 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 	- `learning_rate` plus bas pour eviter des mises a jour trop agressives (E1 montrait une variance notable).
 	- `epsilon` plus petit pour rendre les updates PPO plus prudentes, donc plus stables.
 	- `beta` legerement reduit pour diminuer le cote trop aleatoire en fin d'apprentissage et gagner en trajectoire propre.
-- **Resultats observes**: [a completer apres run E2]
-- **Interpretation**: [a completer apres run E2]
+- **Resultats observes**:
+	- Run lance avec `--run-id=Experience2`.
+	- Cumulative reward: -2.53 (debut) → 60.05 (step 705k, **plus eleve que E1 final!**)
+	- Episode length: Similaire a E1, souvent proche du max 624 avec dips ponctuels.
+	- Policy loss: Oscille entre 0.024-0.030 (stable, comparable a E1).
+	- Value loss: Monte a 1.47 (legerement plus instabile que E1 qui atteignait max 1.10-1.25).
+	- Tests en inference: plusieurs crashes et comportements erratiques (agent reste bloque apres avoir rate une reward, crash au debut d'autres parcours). Un essai a complete le tour en `20.18 sec` (plus rapide que E1).
+- **Interpretation**: E2 converge vers une reward finale plus elevee que E1 (+5.54), suggerant un apprentissage plus "agressif" et potentiellement plus rapide. Cependant, la value loss plus elevee indique que le critic a plus de difficulte a suivre les dynamiques de reward, ce qui se traduit par une moindre robustesse en inference: plusieurs crashes et comportements erratiques. Le temps tour reussi (20.18 sec vs 23.26 sec) montre que quand l'agent ne crash pas, il est plus rapide. Le compromis est donc: meilleure performance finale, mais moins de stabilite. Le batch size augmente + learning rate reduit ont permis une meilleure convergence, mais au prix de la robustesse.
 
 #### Experience E3
 - **Choix des parametres**: [ ]
@@ -161,12 +167,12 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 
 | Critere | E1 | E2 | E3 |
 |---|---:|---:|---:|
-| Reward moyenne | 54.51 (step 555k, cumulative reward card) | [ ] | [ ] |
-| Episode length moyenne | Souvent haute (proche 624), avec chutes ponctuelles | [ ] | [ ] |
-| Entropy | Non exportee pour E1 | [ ] | [ ] |
-| Policy loss | Oscille env. 0.027 -> 0.045 (plutot stable) | [ ] | [ ] |
-| Value loss | Monte env. 0.007 -> 1.106 (critic plus instable) | [ ] | [ ] |
-| Taux de succes | 1/2 tests inference (1 crash, 1 tour valide) | [ ] | [ ] |
+| Reward finale | 54.51 (step 555k) | **60.05 (step 705k)** | [ ] |
+| Episode length moyenne | Souvent 624 (max), avec dips ponctuels | Similaire: souvent 624, avec dips | [ ] |
+| Policy loss finale | 0.027 -> 0.045 (stable) | 0.024 (stable) | [ ] |
+| Value loss finale | 0.007 -> 1.10-1.25 (instabilite legere) | 0.004 -> 1.47 (instabilite plus marquee) | [ ] |
+| Taux de succes inference | 1/2 (50%, 1 crash, 1 tour 23.26s) | ~1/4 ou moins (25%, varios crashes, 1 tour 20.18s) | [ ] |
+| Temps tour moyen (reussi) | 23.26 sec | 20.18 sec (plus rapide) | [ ] |
 
 ---
 
