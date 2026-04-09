@@ -124,11 +124,11 @@ public class rollerAgentDiscrete : Agent
             // Getting closer or further from target
         if(distanceToTarget < lastDistanceToTarget)
         {
-            AddReward(0.01f);
+            AddReward(0.005f);
         }
         else
         {
-            AddReward(-0.01f);
+            AddReward(-0.005f);
         }
         lastDistanceToTarget = distanceToTarget;
         
