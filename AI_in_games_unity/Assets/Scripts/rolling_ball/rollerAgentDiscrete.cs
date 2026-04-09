@@ -151,9 +151,9 @@ public class rollerAgentDiscrete : Agent
     private void FixedUpdate()
     {
         
-        if(this.StepCount >= 400)
+        if(this.StepCount >= 500)
         {
-            SetReward(-0.7f);
+            SetReward(-0.5f);
             EndEpisode();
         }
     }

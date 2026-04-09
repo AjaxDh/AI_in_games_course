@@ -86,7 +86,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 |---|---:|---:|---:|---|---:|---:|---:|---|---|---|
 | E1 (baseline) | 0.99 | 250 | 1e-4 | 0.9 / 0.05 / 2000 | 500 | 256 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
 | E2 | 0.99 | 150 | 7e-5 | 0.9 / 0.05 / 1500 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.7, max steps 400 | Reduire le temps de run et les spikes tout en limitant le risque de "circling" |
-| E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+| E3 | 0.99 | 180 | 1e-4 | 0.9 / 0.05 / 2000 | 300 | 256 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
 | E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E5 (optionnel) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 
@@ -131,17 +131,29 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Baisse des episodes longs sans succes terminal, grace au timeout plus strict et plus penalise.
   - Verification attendue du lag: baisse de `run_total_seconds` et de `mean_episode_elapsed_seconds` par rapport a E1.
 - **Resultats observes**:
-  - [ ]
+  - Run complet: `episodes_completed=150`, `total_steps=41502`, `run_total_seconds=842.105`.
+  - Moyennes globales: `mean_episode_reward=0.384`, `mean_episode_duration=276.68`, `mean_episode_elapsed_seconds=5.574`.
+  - Les spikes restent importants sur la reward et sur la duree; la stabilisation est moins nette que prevu.
+  - Beaucoup d'episodes se terminent au timeout (`terminal_reward=-0.7`): 59/150 (39.33%).
+  - Le succes existe mais reste partiel (`terminal_reward=1.0`): 63/150 (42.00%).
+  - Observation pratique post-run: une partie du lag percu venait du contexte d'execution (focus de la fenetre terminal), pas uniquement des hyperparametres.
 - **Interpretation rapide**:
-  - [ ]
+  - E2 a bien reduit le temps total de run par rapport a E1, mais au prix d'une baisse de qualite d'apprentissage (reward moyenne plus faible, episodes plus longs, nombreux timeouts).
+  - La combinaison `eps_decay=1500` + `max steps=400` + `timeout=-0.7` parait trop contraignante pour converger proprement.
+  - La baisse de `batch_size` a pu augmenter le bruit d'apprentissage; comme le lag semble aussi lie aux conditions d'execution, E3 revient a `batch_size=256`.
 
 #### Experience E3 - [Titre]
 - **Choix des parametres**:
-  - [ ]
+  - Hyperparametres Python: `gamma=0.99`, `N=180`, `lr=1e-4`, `epsilon=0.9/0.05/2000`, `F=300`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
+  - Reward design Unity: shaping `+0.01/-0.01` conserve (anti-circling), terminal `+1/-1` conserve, timeout `-0.5` et limite episode `500` steps.
 - **Methodologie / reflexion / approche**:
-  - [ ]
+  - E3 corrige E2 avec une strategie conservative: ne pas toucher l'architecture du reseau et revenir a des valeurs plus stables deja observees (B=256, eps_decay=2000).
+  - Le parametre `F` est abaisse de `500` a `300` pour synchroniser plus frequemment le target network, afin de reduire certaines oscillations observees en E2 sans introduire une rupture majeure de configuration.
+  - Le but est d'isoler l'effet des contraintes trop strictes d'E2 (timeout court et penalite forte) qui ont probablement augmente les echecs a 400 steps.
 - **Attentes avant execution**:
-  - [ ]
+  - Augmentation du taux de succes et baisse du taux de timeout.
+  - Courbe reward plus lisible (moins de saturation autour des episodes coupes a 400).
+  - Duree de run raisonnable (N=180) tout en laissant plus de temps d'apprentissage que E2.
 - **Resultats observes**:
   - [ ]
 - **Interpretation rapide**:

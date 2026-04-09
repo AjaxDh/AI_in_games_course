@@ -81,19 +81,19 @@ class ReplayMemory(object):
 
 class Dqn():
     
-    def __init__(self, input_size, output_size, batch_size=128, gamma=0.99, F=500, lr=7e-5, eps_start=0.9, eps_end=0.05, eps_decay=1500):
+    def __init__(self, input_size, output_size, batch_size=256, gamma=0.99, F=300, lr=1e-4, eps_start=0.9, eps_end=0.05, eps_decay=2000):
         """ Implements the deep Q-learning algorithm
 
         Args:
             input_size (int): Number of observations given to the agent
             output_size (int): Number of possible actions performed by the agent
-            batch_size (int, optional): Number of transitions sampled from the replay buffer. Defaults to 128.
+            batch_size (int, optional): Number of transitions sampled from the replay buffer. Defaults to 256.
             gamma (float, optional): Discount factor. Defaults to 0.99.
-            F (float, optional): Update rate of the target network. Defaults to 500.
-            lr (_type_, optional): Learning rate of the optimiser. Defaults to 7e-5.
+            F (float, optional): Update rate of the target network. Defaults to 300.
+            lr (_type_, optional): Learning rate of the optimiser. Defaults to 1e-4.
             eps_start (float, optional): Starting value of epsilon. Defaults to 0.9.
             eps_end (float, optional): Final value of epsilon. Defaults to 0.05.
-            eps_decay (int, optional): Rate of the exponential decay of epsilon. Higher value means slower decay. Defaults to 1500.
+            eps_decay (int, optional): Rate of the exponential decay of epsilon. Higher value means slower decay. Defaults to 2000.
         """
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
