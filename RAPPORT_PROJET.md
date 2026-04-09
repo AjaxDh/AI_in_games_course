@@ -66,6 +66,16 @@ $$
 - Si l'agent apprend mais reste instable, on peut reduire `lr`, lisser les rewards, ou ajuster `F`.
 - Si le calcul devient trop couteux, garder les changements qui ont le plus d'impact sur l'apprentissage et limiter le reste.
 
+### Libertes techniques ajoutees (hors consigne minimale)
+Des fonctionnalites pratiques ont ete ajoutees pour mieux conduire les experiences, sans changer le coeur de l'algorithme DQN:
+- timer global et temps par episode,
+- pause/reprise pendant l'entrainement (touche espace) et arret propre (touche `Q`),
+- journal automatique des episodes (CSV),
+- resume de run (JSON) et journal lisible (Markdown),
+- checkpoints periodiques du modele.
+
+Ces ajouts servent surtout a la reproductibilite et au confort experimental (suivi, comparaison, reprise), pas a "booster" artificiellement les performances de l'agent.
+
 ---
 
 ## Experiences
@@ -84,7 +94,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 
 | Experience | Gamma | N episodes | lr | Epsilon (start/end/decay) | F | B | M | NN | Rewards | Attente principale |
 |---|---:|---:|---:|---|---:|---:|---:|---|---|---|
-| E1 (baseline) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+| E1 (baseline) | 0.99 | 300 | 1e-4 | 0.9 / 0.05 / 3000 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
 | E2 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
@@ -94,11 +104,12 @@ Le rapport peut etre raconte comme une suite d'iterations:
 
 #### Experience E1 - [Titre]
 - **Choix des parametres**:
-  - [ ]
+  - Configuration actuelle du projet (baseline): `gamma=0.99`, `N=300`, `lr=1e-4`, `epsilon=0.9/0.05/3000`, `F=500`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
+  - Reward design: shaping `+0.02/-0.02`, terminal `+1/-1`, timeout `-0.5`.
 - **Methodologie / reflexion / approche**:
-  - [ ]
+  - Cette experience sert de point de reference pour comparer toutes les experiences suivantes.
 - **Attentes avant execution**:
-  - [ ]
+  - Verifier la stabilite globale de la courbe reward et la tendance de duree moyenne des episodes.
 - **Resultats observes**:
   - [A completer avec le plot]
 - **Interpretation rapide**:
