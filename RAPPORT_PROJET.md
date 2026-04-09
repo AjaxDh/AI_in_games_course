@@ -82,6 +82,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
 ### Detail de chaque experience (a dupliquer)
 
 #### Experience E1 - Baseline de reference
+![Courbe reward E1](<Rolling_ball_Python/Experience 1/rolling_ball_reward Experience 1.png>)
+<!-- ILLUSTRATION_E1_OBSERVATION: inserer ici une capture d'un passage avec variance forte (spikes) et une capture de fin de run plus stable. -->
 - **Choix des parametres**:
   - Configuration actuelle du projet (baseline): `gamma=0.99`, `N=250`, `lr=1e-4`, `epsilon=0.9/0.05/2000`, `F=500`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design: shaping `+0.02/-0.02`, terminal `+1/-1`, timeout `-0.5`.
@@ -90,6 +92,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Attentes avant execution**:
   - Verifier la stabilite globale de la courbe reward et la tendance de duree moyenne des episodes.
 - **Resultats observes**:
+  - [Illustration conseillée E1-A] Capture d'une zone avec ecarts brusques entre episodes consecutifs (spikes).
+  - [Illustration conseillée E1-B] Capture d'une zone de fin de run montrant la stabilisation relative.
   - Le run est complet: `episodes_completed=250`, `total_steps=47564`, `run_total_seconds=1247.941`.
   - Les moyennes globales sont positives: `mean_episode_reward=1.778`, `mean_episode_duration=190.256`.
   - En execution locale (Unity Editor), des ralentissements ont ete observes sur la machine pendant certains passages de l'entrainement.
@@ -103,6 +107,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Le risque principal a surveiller est le "reward shaping farming" (l'agent gagne des points en tournant autour de la cible), ce qui motive une reduction du shaping et un timeout plus penalise en E2.
 
 #### Experience E2 - Compromis vitesse/stabilite
+![Courbe reward E2](<Rolling_ball_Python/Experience 2/rolling_ball_reward Experience 2.png>)
+<!-- ILLUSTRATION_E2_OBSERVATION: inserer ici une capture d'episode timeout/errance et une capture de courbe restant proche de 0. -->
 - **Choix des parametres**:
   - Hyperparametres Python: `gamma=0.99`, `N=150`, `lr=7e-5`, `epsilon=0.9/0.05/1500`, `F=500`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` (au lieu de `+/-0.02`), terminal `+1/-1` conserve, timeout `-0.7` (au lieu de `-0.5`) et limite episode `400` steps (au lieu de `500`).
@@ -120,6 +126,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Baisse des episodes longs sans succes terminal, grace au timeout plus strict et plus penalise.
   - Verification attendue du lag: baisse de `run_total_seconds` et de `mean_episode_elapsed_seconds` par rapport a E1.
 - **Resultats observes**:
+  - [Illustration conseillée E2-A] Capture d'un episode se terminant au timeout (limite atteinte sans succes).
+  - [Illustration conseillée E2-B] Capture de la courbe reward montrant une stabilisation faible autour de 0.
   - Run complet: `episodes_completed=150`, `total_steps=41502`, `run_total_seconds=842.105`.
   - Moyennes globales: `mean_episode_reward=0.384`, `mean_episode_duration=276.68`, `mean_episode_elapsed_seconds=5.574`.
   - Les spikes restent importants sur la reward et sur la duree; la stabilisation est moins nette que prevu.
@@ -132,6 +140,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Le lag reste contraignant en pratique, donc E3 conserve un compromis `batch_size=128` et corrige d'abord les autres facteurs (timeout, epsilon final, nombre d'episodes).
 
 #### Experience E3 - Stabilisation apres E2
+![Courbe reward E3](<Rolling_ball_Python/Experience 3/rolling_ball_reward Experiences 3.png>)
+<!-- ILLUSTRATION_E3_OBSERVATION: inserer ici une capture d'approche de la cible avec contact rate encore inconsistent et volatilite residuelle. -->
 - **Choix des parametres**:
   - Hyperparametres Python: `gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` conserve (anti-circling), terminal `+1/-1` conserve, timeout `-0.5` et limite episode `500` steps.
@@ -146,6 +156,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Courbe reward plus lisible (moins de saturation autour des episodes coupes a 400).
   - Duree de run raisonnable (N=220) tout en laissant plus de temps d'apprentissage que E2.
 - **Resultats observes**:
+  - [Illustration conseillée E3-A] Capture d'une sequence ou l'agent se rapproche de la cible mais ne convertit pas toujours en succes.
+  - [Illustration conseillée E3-B] Capture de la courbe montrant une progression globale mais encore des spikes visibles.
   - Le run est complet: `episodes_completed=220`, `total_steps=54110`, `run_total_seconds=1481.531`.
   - Moyennes globales: `mean_episode_reward=0.5226`, `mean_episode_duration=245.95`, `mean_episode_elapsed_seconds=6.696`.
   - Repartition des terminaisons:
@@ -160,6 +172,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Le compromis E3 est valide pour stabiliser sans exploser le cout de calcul, mais ne depasse pas encore la baseline E1.
 
 #### Experience E4 - Finale (validation du compromis)
+![Courbe reward E4](<Rolling_ball_Python/Experience 4/rolling_ball_reward Experience 4.png>)
+<!-- ILLUSTRATION_E4_OBSERVATION: inserer ici une capture comparant un passage turbulent debut run vs un passage plus regulier en fin de run. -->
 - **Choix des parametres**:
   - Configuration finale de validation: `gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01`, terminal `+1/-1`, timeout `-0.5`, limite episode `500` steps.
@@ -168,6 +182,9 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Attentes avant execution**:
   - Verifier si une baisse du learning rate et un temps d'apprentissage plus long reduisent les oscillations sans detruire le taux de succes.
 - **Resultats observes**:
+  - [Illustration conseillée E4-A] Capture de debut/milieu de run encore variable (pour montrer que la variabilite n'a pas disparu).
+  - [Illustration conseillée E4-B] Capture de fin de run plus reguliere que E3 (moins de spikes marquants).
+  - [Illustration conseillée E4-C] Capture comportementale de l'agent: approche cible plus propre, mais quelques non-contacts residuels possibles.
   - Le run final est complet: `episodes_completed=250`, `total_steps=63588`, `run_total_seconds=1396.504`.
   - Moyennes globales: `mean_episode_reward=0.9013`, `mean_episode_duration=254.352`, `mean_episode_elapsed_seconds=5.5687`.
   - Repartition des terminaisons:
@@ -190,6 +207,17 @@ Cette section sert de synthese globale. Les details d'observation et d'interpret
 - Figure 1: [courbe reward par episode]
 - Figure 2: [courbe duree par episode]
 - Figure 3 (optionnel): [moving average ou taux de succes]
+
+### Emplacements recommandes pour images comportementales
+- Figure C1 (E1 - Variance): [A inserer - exemple de spikes en debut/milieu de run]
+- Figure C2 (E1 - Stabilisation): [A inserer - exemple de segment plus stable en fin de run]
+- Figure C3 (E2 - Timeout): [A inserer - episode qui atteint la limite de steps]
+- Figure C4 (E2 - Instabilite): [A inserer - courbe reward proche de 0 avec oscillations]
+- Figure C5 (E3 - Progression): [A inserer - progression visible mais irregularite persistante]
+- Figure C6 (E3 - Approche sans conversion): [A inserer - agent proche cible mais contact final non garanti]
+- Figure C7 (E4 - Debut variable): [A inserer - passage encore turbulent]
+- Figure C8 (E4 - Fin plus lissee): [A inserer - passage de fin de run avec moins de spikes]
+- Figure C9 (E4 - Comportement cible): [A inserer - approche plus propre de la cible]
 
 ### Resultats attendus vs observes (synthese)
 - **Ce qui etait attendu**:
