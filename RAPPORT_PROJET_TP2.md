@@ -96,7 +96,7 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 |---|---:|---:|---:|---:|---:|---:|---|
 | E1 | 512 | 3e-4 | 0.2 | 0.005 | 0.95 | 3 | Baseline |
 | E2 | 1024 | 1.5e-4 | 0.15 | 0.003 | 0.95 | 3 | Reward finale plus elevee mais moins stable |
-| E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Corriger l'instabilite de E2 en gardant apprentissage rapide |
+| E3 | 768 | 2.2e-4 | 0.17 | 0.004 | 0.95 | 3 | Compromis stabilite-rapidite: apprentissage rapide + inference robuste |
 
 ### Structure courte pour chaque experience
 
@@ -140,10 +140,22 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - **Interpretation**: E2 converge vers une reward finale plus elevee que E1 (+5.54), suggerant un apprentissage plus "agressif" et potentiellement plus rapide. Cependant, la value loss plus elevee indique que le critic a plus de difficulte a suivre les dynamiques de reward, ce qui se traduit par une moindre robustesse en inference: plusieurs crashes et comportements erratiques. Le temps tour reussi (20.18 sec vs 23.26 sec) montre que quand l'agent ne crash pas, il est plus rapide. Le compromis est donc: meilleure performance finale, mais moins de stabilite. Le batch size augmente + learning rate reduit ont permis une meilleure convergence, mais au prix de la robustesse.
 
 #### Experience E3
-- **Choix des parametres**: [ ]
-- **Ce qu'on teste**: [ ]
-- **Resultats observes**: [ ]
-- **Interpretation**: [ ]
+- **Choix des parametres**:
+	- `batch_size`: `E1=512, E2=1024 → E3=768` (compromis intermédiaire)
+	- `learning_rate`: `E1=3e-4, E2=1.5e-4 → E3=2.2e-4` (plus proche de E1 pour réduire instabilité)
+	- `epsilon` (PPO clip): `E1=0.2, E2=0.15 → E3=0.17` (un peu plus de flexibilité que E2)
+	- `beta` (entropy): `E1=0.005, E2=0.003 → E3=0.004` (milieu pour équilibrer exploration)
+	- `lambda` et `num_epoch` inchanges (`0.95`, `3`)
+- **Ce qu'on teste**:
+	- Objectif E3: atteindre un **compromis optimal** entre les deux approches.
+	- Cible pratique: une reward finale proche de E2 (convergence rapide), MAIS avec une robustesse d'inference proche de E1 (peu de crashes).
+- **Pourquoi ces changements**:
+	- **Batch size 768** (au lieu de 512 ou 1024): Assez grand pour lisser les gradients comme E2, mais pas trop pour éviter l'instabilité de la value loss. Represente un juste-milieu computationnellement.
+	- **Learning rate 2.2e-4** (au lieu de 3e-4 ou 1.5e-4): Compromise entre la stabilité relative de E1 (3e-4 trop haute) et la convergence rapide de E2 (1.5e-4 trop basse et instable). Une valeur plus proche de E1 devrait réduire les swings violents observés en value loss E2, tout en gardant une progression acceptable.
+	- **Epsilon 0.17** (au lieu de 0.2 ou 0.15): PPO clip légèrement plus permissif que E2 (0.15 était peut-être trop restrictif), mais plus strict que E1 (0.2 laissait trop de variance). Permet une meilleure adaptation comportementale en inference.
+	- **Beta 0.004** (au lieu de 0.005 ou 0.003): Entrepose l'exploration (β bas = moins d'aleatoire) et l'exploitation (β haut = plus d'aleatoire). Equilibre entre la tendance a rester bloque de E1 et l'erraticité de E2.
+- **Resultats observes**: [a completer apres run E3]
+- **Interpretation**: [a completer apres run E3]
 
 ---
 
