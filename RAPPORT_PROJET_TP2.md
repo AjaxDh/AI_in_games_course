@@ -28,6 +28,12 @@ Le rapport peut rester leger. L'important est surtout de montrer:
 - `AI_in_games_unity/Assets/Scripts/car_agents/car_agent.cs`: classe de base de l'agent.
 - `AI_in_games_unity/Assets/Scripts/car_agents/car_agent_template_track1.cs`: script a completer pour le TP2.
 
+### Scripts a citer dans le rapport
+- `results/configuration_example.yaml`: fichier de configuration du PPO.
+- `AI_in_games_unity/Assets/Scripts/car_agents/car_controller.cs`: controle les roues, l'acceleration, le freinage et la direction.
+- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent.cs`: gere l'initialisation commune de l'agent et les episodes.
+- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent_template_track1.cs`: classe a completer pour connecter l'agent a l'environnement.
+
 ### Ce qu'il faut faire dans Unity
 - Completer `_getTarget()` et `_getStart()`.
 - Completer `CollectObservations()`.
@@ -63,6 +69,10 @@ PPO est une methode policy-based. On peut simplement dire que l'algorithme appre
 Le prof a surtout insiste sur le batch size.
 Si le batch size augmente, l'optimisation utilise plus d'observations, donc les mises a jour sont souvent plus stables mais aussi plus lourdes.
 
+### E1 a lancer en premier
+Le premier run sert de baseline.
+Il faut garder la configuration par defaut, lancer l'entrainement sur la scene track1, puis commenter les courbes obtenues sans modifier trop de choses.
+
 ---
 
 ## Experiences
@@ -81,10 +91,10 @@ Si le batch size augmente, l'optimisation utilise plus d'observations, donc les 
 ### Structure courte pour chaque experience
 
 #### Experience E1
-- **Choix des parametres**: [baseline]
-- **Ce qu'on teste**: [reference]
-- **Resultats observes**: [reward, episode length, losses]
-- **Interpretation**: [resume court]
+- **Choix des parametres**: batch size 512, learning rate 3e-4, epsilon 0.2, beta 0.005, lambda 0.95, num epoch 3.
+- **Ce qu'on teste**: la baseline PPO sur track1.
+- **Resultats observes**: [reward, episode length, entropy, policy loss, value loss]
+- **Interpretation**: [resume court sur la stabilite et le comportement du car agent]
 
 #### Experience E2
 - **Choix des parametres**: [ ]
@@ -115,10 +125,12 @@ Si le batch size augmente, l'optimisation utilise plus d'observations, donc les 
 - Figure 4: policy loss et value loss.
 
 ### Images / captures a commenter
-- Une capture de la voiture en train de rouler correctement.
-- Une capture d'un crash ou d'une sortie de route.
-- Une capture d'un passage stable vers la fin de l'entrainement.
-- Une capture des courbes si elles sont assez lisibles.
+- Figure A: voiture au depart de la track1.
+- Figure B: voiture qui atteint la cible.
+- Figure C: voiture qui crash ou sort de la route.
+- Figure D: courbe reward de E1.
+- Figure E: courbe episode length de E1.
+- Figure F: courbes entropy, policy loss et value loss si elles sont lisibles.
 
 ### Comparaison finale
 

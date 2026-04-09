@@ -56,7 +56,17 @@ public class car_agent_template_track1 : car_agent
     /// <param name="sensor">Vector listing all the agent observations</param>
     public override void CollectObservations(VectorSensor sensor)
     {
-        //TODO
+        if(target == null)
+        {
+            sensor.AddObservation(Vector3.zero);
+        }
+        else
+        {
+            sensor.AddObservation(distanceVector(target, this.transform));
+        }
+
+        sensor.AddObservation(rBody.velocity.x);
+        sensor.AddObservation(rBody.velocity.z);
     }
 
     /// <summary>
@@ -67,7 +77,28 @@ public class car_agent_template_track1 : car_agent
     /// </summary>
     protected override void _fixRewards()
     {
-        //TODO
+        if(target == null)
+        {
+            return;
+        }
+
+        float distanceToTarget = Vector3.Distance(this.transform.position, target.position);
+        if(lastDistanceToTarget > 9999f)
+        {
+            lastDistanceToTarget = distanceToTarget;
+            return;
+        }
+
+        if(distanceToTarget < lastDistanceToTarget)
+        {
+            AddReward(0.00001f);
+        }
+        else
+        {
+            AddReward(-0.001f);
+        }
+
+        lastDistanceToTarget = distanceToTarget;
     }
 
     /// <summary>
@@ -80,7 +111,8 @@ public class car_agent_template_track1 : car_agent
     {
         if(tag == "Death")
         {
-            //TODO
+            SetReward(-1.0f);
+            EndEpisode();
         }
     }
     
@@ -99,7 +131,7 @@ public class car_agent_template_track1 : car_agent
         {
             if(tag == "Target")
             {
-                //TODO
+                SetReward(1.0f);
 
                 // When the target is reached, we switch to the next target.
                 toSet_training_positions.transform.GetChild(positionStep).gameObject.SetActive(false);
@@ -115,6 +147,7 @@ public class car_agent_template_track1 : car_agent
                 toSet_training_positions.transform.GetChild(positionStep).gameObject.SetActive(true);
                 target = toSet_training_positions.transform.GetChild(positionStep).GetChild(1);
                 target.position = toSet_training_positions.transform.GetChild(positionStep).GetChild(1).position;
+                lastDistanceToTarget = Vector3.Distance(this.transform.position, target.position);
             }
         }
         else
@@ -132,8 +165,40 @@ public class car_agent_template_track1 : car_agent
     /// <param name="actionBuffers">Output of the neural network model.</param>
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        //Put your actions here.
-        //TODO
+        if(actionBuffers.DiscreteActions[0] == 1)
+        {
+            car_script.isBreaking = true;
+        }
+        else
+        {
+            car_script.isBreaking = false;
+        }
+
+        if(actionBuffers.DiscreteActions[1] == 0)
+        {
+            car_script.horizontalInput = 0;
+        }
+        else if(actionBuffers.DiscreteActions[1] == 1)
+        {
+            car_script.horizontalInput = 1;
+        }
+        else if(actionBuffers.DiscreteActions[1] == 2)
+        {
+            car_script.horizontalInput = -1;
+        }
+
+        if(actionBuffers.DiscreteActions[2] == 0)
+        {
+            car_script.verticalInput = 0;
+        }
+        else if(actionBuffers.DiscreteActions[2] == 1)
+        {
+            car_script.verticalInput = 1;
+        }
+        else if(actionBuffers.DiscreteActions[2] == 2)
+        {
+            car_script.verticalInput = -1;
+        }
 
         _fixRewards();
     }

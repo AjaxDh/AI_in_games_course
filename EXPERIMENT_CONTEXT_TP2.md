@@ -16,6 +16,12 @@ Train the car agent to drive without crashing in Unity with ML-Agents, using PPO
 - `AI_in_games_unity/Assets/Scripts/car_agents/car_agent.cs`: base ML-Agents agent class.
 - `AI_in_games_unity/Assets/Scripts/car_agents/car_agent_template_track1.cs`: track1 agent template to complete.
 
+## Scripts to cite in the report
+- `results/configuration_example.yaml`: PPO hyperparameters for training.
+- `AI_in_games_unity/Assets/Scripts/car_agents/car_controller.cs`: handles steering, throttle and braking.
+- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent.cs`: base agent class with initialization and episode handling.
+- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent_template_track1.cs`: subclass where the training interaction is implemented.
+
 ## Unity editor settings to mention
 - Behavior Name.
 - Vector Observation space size.
@@ -52,12 +58,25 @@ mlagents-learn results/configuration_example.yaml --run-id=my_agent --force
 
 4. Press Play in Unity.
 
+## E1 to do first
+- Use the track1 scene.
+- Keep the baseline configuration for the first run.
+- Record the first curves before changing anything.
+- For the report, describe the baseline behaviour and the first observations only.
+
 ## What to compare between runs
 - Success rate.
 - Reward trend.
 - Episode duration.
 - Stability of the curves.
 - Effect of batch size and learning rate.
+
+## Images to comment
+- Car starting correctly in the track1 scene.
+- Car reaching the target.
+- Car crashing or leaving the road.
+- Reward curve after E1.
+- Episode length curve after E1.
 
 ## Short analysis rule
 - If batch size is larger: training updates are heavier, but gradients are usually more stable.
