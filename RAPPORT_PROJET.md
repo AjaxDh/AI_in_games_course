@@ -1,10 +1,6 @@
-# Rapport Projet RL - Agent Rolling Ball (Template)
+# Rapport Projet RL - Agent Rolling Ball
 
-Auteur: [Nom Prenom]
-Date: [JJ/MM/AAAA]
-Projet: Rolling Ball DQN
-Matiere: [Nom du cours]
-
+Auteur: Ajax DESHAYES--HUET
 ---
 
 ## Introduction
@@ -19,6 +15,18 @@ L'agent est entraine avec un algorithme Deep Q-Network (DQN), implante en Python
 - Etudier l'impact des hyperparametres et des recompenses sur l'apprentissage.
 - Comparer 4 a 5 experiences avec configurations differentes.
 - Interpreter les resultats (performance, stabilite, limites).
+- Faire evoluer les objectifs au fil des experiences a partir des resultats observes.
+
+### Logique generale du rapport
+Le rapport doit montrer une demarche iterative et non une suite de tests isoles.
+Chaque experience sert a:
+1. observer un comportement,
+2. l'interpreter,
+3. identifier une limite,
+4. ajuster les parametres,
+5. verifier si la nouvelle hypothese ameliore la situation.
+
+Autrement dit, les resultats d'une experience modifient l'objectif de la suivante.
 
 ---
 
@@ -51,11 +59,26 @@ $$
 - **NN (taille reseau)**: capacite de representation, cout de calcul, risque d'instabilite.
 - **Rewards**: signal d'apprentissage (shaping + terminal rewards).
 
+### Comment raisonner sur les modifications
+- Si Unity devient lent au fil des episodes, reduire `N` ou la frequence de tests longs pour accelerer le cycle d'analyse.
+- Si la courbe reward montre beaucoup de spikes, verifier en premier les rewards et `lr`.
+- Si l'agent semble sous-apprendre, on peut augmenter la duree d'entrainement ou reduire plus lentement l'exploration.
+- Si l'agent apprend mais reste instable, on peut reduire `lr`, lisser les rewards, ou ajuster `F`.
+- Si le calcul devient trop couteux, garder les changements qui ont le plus d'impact sur l'apprentissage et limiter le reste.
+
 ---
 
 ## Experiences
 
 > Consigne: lancer **4 a 5 experiences** avec des parametres differents.
+
+### Fil conducteur experimental
+Le rapport peut etre raconte comme une suite d'iterations:
+- Experience 1: base initiale apres completion des exercices.
+- Experience 2: ajustement pour reduire le lag et accelerer l'experience.
+- Experience 3: correction d'un sous-apprentissage ou d'une instabilite observee.
+- Experience 4: affinement pour rendre la courbe plus reguliere.
+- Experience 5 (optionnelle): validation finale de la configuration retenue.
 
 ### Tableau recapitulatif des experiences
 
@@ -71,43 +94,66 @@ $$
 
 #### Experience E1 - [Titre]
 - **Choix des parametres**:
-  - [Expliquer ce qui est modifie et pourquoi]
+  - Configuration de base proche du cours.
+  - Point de depart pour observer la dynamique initiale de l'agent.
 - **Methodologie / reflexion / approche**:
-  - [Comment le test a ete concu, variable controlee, comparaison]
+  - On conserve une configuration simple pour etablir une reference de comparaison.
 - **Attentes avant execution**:
-  - [Effet attendu sur reward, duree episode, stabilite]
+  - Courbe encore bruitée, episodes longs, agent fortement exploratoire.
 - **Resultats observes**:
-  - [Courbes, valeurs, comportement agent]
+  - [A completer avec le plot]
 - **Interpretation rapide**:
-  - [Est-ce coherent avec l'attente?]
+  - [A completer]
 
 #### Experience E2 - [Titre]
 - **Choix des parametres**:
+  - Premiere modification pour reduire le temps d'attente et le cout de simulation.
+  - Ajustement de certains parametres pour voir si l'agent converge plus vite.
 - **Methodologie / reflexion / approche**:
+  - On change peu de variables a la fois afin d'identifier l'effet principal.
 - **Attentes avant execution**:
+  - Unity doit moins ramer, et l'entrainement doit devenir plus rapide a evaluer.
+  - Risque: sous-apprentissage si la duree est trop reduite.
 - **Resultats observes**:
+  - [A completer avec le plot]
 - **Interpretation rapide**:
+  - [A completer: par exemple courbe plus rapide mais spikes encore presents]
 
 #### Experience E3 - [Titre]
 - **Choix des parametres**:
+  - Ajustement cible pour corriger ce que l'experience 2 a revele.
 - **Methodologie / reflexion / approche**:
+  - L'hypothese testee est precise: stabiliser l'apprentissage ou reduire l'instabilite.
 - **Attentes avant execution**:
+  - Courbes moins chaotiques, reward plus coherent sur la duree.
 - **Resultats observes**:
+  - [A completer avec le plot]
 - **Interpretation rapide**:
+  - [A completer]
 
 #### Experience E4 - [Titre]
 - **Choix des parametres**:
+  - Affinage final base sur les tendances deja identifiees.
 - **Methodologie / reflexion / approche**:
+  - On garde les elements qui fonctionnent et on limite les sources de bruit.
 - **Attentes avant execution**:
+  - Stabilite plus forte et progression plus reguliere.
 - **Resultats observes**:
+  - [A completer avec le plot]
 - **Interpretation rapide**:
+  - [A completer]
 
 #### Experience E5 (optionnelle) - [Titre]
 - **Choix des parametres**:
+  - Variante finale pour valider la meilleure configuration.
 - **Methodologie / reflexion / approche**:
+  - [A completer]
 - **Attentes avant execution**:
+  - [A completer]
 - **Resultats observes**:
+  - [A completer]
 - **Interpretation rapide**:
+  - [A completer]
 
 ---
 
@@ -151,6 +197,12 @@ $$
 - Variabilite due a l'alea (seed non fixee) [ ]
 - Sensibilite aux rewards shaping [ ]
 - Temps de calcul / vitesse simulation [ ]
+- Certaines ameliorations de vitesse peuvent detruire de la stabilite, et inversement.
+
+### Lecture des spikes
+- Des spikes ne signifient pas automatiquement un bug.
+- Ils peuvent venir de l'exploration encore trop forte, d'un shaping trop agressif, ou d'une politique pas encore stabilisee.
+- Il faut lire ensemble reward moyenne, duree moyenne, et taux de succes.
 
 ### Menaces a la validite
 - Difference entre entrainement en Editor et build headless.
@@ -169,6 +221,9 @@ $$
   - [Parametres finaux retenus]
 - **Ameliorations futures**:
   - [Ex: Double DQN, prioritized replay, recompenses mieux faconnees, evaluation sur plusieurs seeds]
+
+### Phrase de synthese type
+L'analyse doit montrer comment chaque experience modifie la suivante: le projet est donc un processus d'optimisation iterative, pas seulement une comparaison de chiffres.
 
 ---
 
