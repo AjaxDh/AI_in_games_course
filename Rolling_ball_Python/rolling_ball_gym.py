@@ -10,14 +10,14 @@ def main():
 	#Parameters
 	input_size = 9
 	output_size = 5
-	batch_size = 256
+	batch_size = 128
 	gamma = 0.99
 	F = 500
 	lr = 1e-4
 	eps_start = 0.9
 	eps_end = 0.05
-	eps_decay = 2000
-	n_episode = 250
+	eps_decay = 3000
+	n_episode = 300
 	
 
 	# Init environment 

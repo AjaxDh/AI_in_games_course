@@ -20,11 +20,9 @@ class Network(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
 
-#       !!!!!!!!!!!!!! Implement the network architecture !!!!!!!!!!!!!!
-# 
-#        self.fc_input = nn.Linear(input_size, ???)
-#        ...
-#        self.fc_output = nn.Linear( ??? , output_size)
+        self.fc_input = nn.Linear(input_size, 512)
+        self.fc_hidden = nn.Linear(512, 512)
+        self.fc_output = nn.Linear(512, output_size)
 
 
     def forward(self, state):
@@ -37,10 +35,10 @@ class Network(nn.Module):
             torch tensor: Q-value
         """
 
-#       !!!!!!!!!!!!!! Implement the input propagation through the network to get the Q-value !!!!!!!!!!!!!!        
-#
-#        q_values = ???
-#        return q_values
+        x = F.relu(self.fc_input(state))
+        x = F.relu(self.fc_hidden(x))
+        q_values = self.fc_output(x)
+        return q_values
 
 
 class ReplayMemory(object):
@@ -83,7 +81,7 @@ class ReplayMemory(object):
 
 class Dqn():
     
-    def __init__(self, input_size, output_size, batch_size=256, gamma=0.99, F=500, lr=1e-4, eps_start=0.9, eps_end=0.05, eps_decay=2000):
+    def __init__(self, input_size, output_size, batch_size=128, gamma=0.99, F=500, lr=1e-4, eps_start=0.9, eps_end=0.05, eps_decay=3000):
         """ Implements the deep Q-learning algorithm
 
         Args:
@@ -186,10 +184,7 @@ class Dqn():
         with torch.no_grad():
             next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1).values
 
-#       !!!!!!!!!!!!!! Calculate target !!!!!!!!!!!!!!
-#
-#       target = 
-#       
+        target = reward_batch + (self.gamma * next_state_values)
 
 
         # Training the network by updating its weight
@@ -224,11 +219,7 @@ class Dqn():
 
 
 
-#       !!!!!!!!!!!!!! Add the new state to memory !!!!!!!!!!!!!!
-#
-#       self.memory.push()
-#       self.state = ?
-#        
+        self.memory.push(self.state, self.last_action, new_state, reward)
         
     
 
@@ -239,10 +230,8 @@ class Dqn():
 
 
 
-#        !!!!!!!!!!!!!! Update target network at some frequency F !!!!!!!!!!!!!!
-#        neural_net1.load_state_dict(neural_net2.state_dict()) -> Load weights of neural net2 in neural net1
-#
-#
+        if self.steps_done % self.F == 0:
+            self.target_net.load_state_dict(self.Q_net.state_dict())
 
 
 
