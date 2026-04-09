@@ -77,7 +77,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 | E1 (baseline) | 0.99 | 250 | 1e-4 | 0.9 / 0.05 / 2000 | 500 | 256 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
 | E2 | 0.99 | 150 | 7e-5 | 0.9 / 0.05 / 1500 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.7, max steps 400 | Reduire le temps de run et les spikes tout en limitant le risque de "circling" |
 | E3 | 0.99 | 220 | 1e-4 | 0.9 / 0.02 / 2000 | 300 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
-| E4 (finale) | 0.99 | 250 | 7e-5 | 0.9 / 0.02 / 2000 | 300 | 128 | 100000 | [9,512,512,5] | shaping +/-0.005, terminal +1/-1, timeout -0.5, max steps 500 | Valider le meilleur compromis et lisser les spikes |
+| E4 (finale) | 0.99 | 250 | 7e-5 | 0.9 / 0.02 / 2000 | 300 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Valider le meilleur compromis et lisser les spikes |
 
 ### Detail de chaque experience (a dupliquer)
 
@@ -162,7 +162,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 #### Experience E4 - Finale (a definir)
 - **Choix des parametres**:
   - Configuration finale de validation: `gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
-  - Reward design Unity: shaping `+0.005/-0.005`, terminal `+1/-1`, timeout `-0.5`, limite episode `500` steps.
+  - Reward design Unity: shaping `+0.01/-0.01`, terminal `+1/-1`, timeout `-0.5`, limite episode `500` steps.
 - **Methodologie / reflexion / approche**:
   - Cette experience sert de validation finale de la meilleure configuration candidate, avec un apprentissage un peu plus prudent pour lisser les spikes encore trop presents.
 - **Attentes avant execution**:
@@ -248,7 +248,7 @@ Cette section propose une lecture transversale E1->E4, en complement des analyse
   - Objectif 2 (etudier l'impact des parametres): en cours, avec enseignements clairs sur E1/E2.
   - Objectif 3 (comparaison multi-experiences): en cours, E4 reste la derniere experience a executer pour valider le compromis final.
 - **Configuration recommandee**:
-  - Configuration recommandee provisoire: celle d'E4 (`gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, shaping `+/-0.005`, timeout `-0.5`, max steps `500`).
+  - Configuration recommandee provisoire: celle d'E4 (`gamma=0.99`, `N=250`, `lr=7e-5`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=128`, shaping `+/-0.01`, timeout `-0.5`, max steps `500`).
 - **Ameliorations futures**:
   - Evaluer E3 sur au moins 2 runs pour mesurer la robustesse.
   - Fixer une seed pour reduire la variance inter-runs.
