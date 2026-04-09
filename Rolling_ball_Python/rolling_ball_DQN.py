@@ -81,7 +81,7 @@ class ReplayMemory(object):
 
 class Dqn():
     
-    def __init__(self, input_size, output_size, batch_size=256, gamma=0.99, F=300, lr=1e-4, eps_start=0.9, eps_end=0.05, eps_decay=2000):
+    def __init__(self, input_size, output_size, batch_size=256, gamma=0.99, F=300, lr=1e-4, eps_start=0.9, eps_end=0.02, eps_decay=2000):
         """ Implements the deep Q-learning algorithm
 
         Args:
@@ -92,7 +92,7 @@ class Dqn():
             F (float, optional): Update rate of the target network. Defaults to 300.
             lr (_type_, optional): Learning rate of the optimiser. Defaults to 1e-4.
             eps_start (float, optional): Starting value of epsilon. Defaults to 0.9.
-            eps_end (float, optional): Final value of epsilon. Defaults to 0.05.
+            eps_end (float, optional): Final value of epsilon. Defaults to 0.02.
             eps_decay (int, optional): Rate of the exponential decay of epsilon. Higher value means slower decay. Defaults to 2000.
         """
 

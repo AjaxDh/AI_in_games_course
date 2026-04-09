@@ -86,7 +86,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 |---|---:|---:|---:|---|---:|---:|---:|---|---|---|
 | E1 (baseline) | 0.99 | 250 | 1e-4 | 0.9 / 0.05 / 2000 | 500 | 256 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
 | E2 | 0.99 | 150 | 7e-5 | 0.9 / 0.05 / 1500 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.7, max steps 400 | Reduire le temps de run et les spikes tout en limitant le risque de "circling" |
-| E3 | 0.99 | 180 | 1e-4 | 0.9 / 0.05 / 2000 | 300 | 256 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
+| E3 | 0.99 | 220 | 1e-4 | 0.9 / 0.02 / 2000 | 300 | 256 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.5, max steps 500 | Recuperer stabilite et taux de succes sans changer l'architecture |
 | E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E5 (optionnel) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 
@@ -144,16 +144,18 @@ Le rapport peut etre raconte comme une suite d'iterations:
 
 #### Experience E3 - [Titre]
 - **Choix des parametres**:
-  - Hyperparametres Python: `gamma=0.99`, `N=180`, `lr=1e-4`, `epsilon=0.9/0.05/2000`, `F=300`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
+  - Hyperparametres Python: `gamma=0.99`, `N=220`, `lr=1e-4`, `epsilon=0.9/0.02/2000`, `F=300`, `batch_size=256`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` conserve (anti-circling), terminal `+1/-1` conserve, timeout `-0.5` et limite episode `500` steps.
 - **Methodologie / reflexion / approche**:
   - E3 corrige E2 avec une strategie conservative: ne pas toucher l'architecture du reseau et revenir a des valeurs plus stables deja observees (B=256, eps_decay=2000).
   - Le parametre `F` est abaisse de `500` a `300` pour synchroniser plus frequemment le target network, afin de reduire certaines oscillations observees en E2 sans introduire une rupture majeure de configuration.
+  - `N` passe a `220` pour donner plus de temps d'apprentissage que E2 (150 episodes) sans revenir au cout complet de E1 (250 episodes).
+  - `eps_end` passe de `0.05` a `0.02` pour reduire l'aleatoire en fin d'entrainement et stabiliser la politique finale.
   - Le but est d'isoler l'effet des contraintes trop strictes d'E2 (timeout court et penalite forte) qui ont probablement augmente les echecs a 400 steps.
 - **Attentes avant execution**:
   - Augmentation du taux de succes et baisse du taux de timeout.
   - Courbe reward plus lisible (moins de saturation autour des episodes coupes a 400).
-  - Duree de run raisonnable (N=180) tout en laissant plus de temps d'apprentissage que E2.
+  - Duree de run raisonnable (N=220) tout en laissant plus de temps d'apprentissage que E2.
 - **Resultats observes**:
   - [ ]
 - **Interpretation rapide**:

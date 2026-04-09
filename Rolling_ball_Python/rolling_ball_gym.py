@@ -36,9 +36,9 @@ def main():
 	F = 300
 	lr = 1e-4
 	eps_start = 0.9
-	eps_end = 0.05
+	eps_end = 0.02
 	eps_decay = 2000
-	n_episode = 180
+	n_episode = 220
 
 	os.makedirs(RESULTS_DIR, exist_ok=True)
 	os.makedirs(CHECKPOINT_DIR, exist_ok=True)
