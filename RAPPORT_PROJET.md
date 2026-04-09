@@ -103,6 +103,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Resultats observes**:
   - Le run est complet: `episodes_completed=250`, `total_steps=47564`, `run_total_seconds=1247.941`.
   - Les moyennes globales sont positives: `mean_episode_reward=1.778`, `mean_episode_duration=190.256`.
+  - En execution locale (Unity Editor), des ralentissements ont ete observes sur la machine pendant certains passages de l'entrainement.
   - La courbe reward monte progressivement en debut d'entrainement, puis se stabilise avec une moyenne lissee positive et des pics residuels.
   - La duree des episodes baisse globalement, mais reste tres variable avec des pics tout au long du run.
   - Des ecarts brusques apparaissent entre episodes consecutifs (ex. episodes 12-15), ce qui est compatible avec l'alea du spawn de la cible et l'exploration epsilon-greedy.
@@ -116,13 +117,19 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Choix des parametres**:
   - Hyperparametres Python: `gamma=0.99`, `N=150`, `lr=7e-5`, `epsilon=0.9/0.05/1500`, `F=500`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
   - Reward design Unity: shaping `+0.01/-0.01` (au lieu de `+/-0.02`), terminal `+1/-1` conserve, timeout `-0.7` (au lieu de `-0.5`) et limite episode `400` steps (au lieu de `500`).
+  - Motivation principale: pendant E1, la simulation Unity a montre des ralentissements (lag), donc E2 privilegie un compromis vitesse/stabilite avant de pousser la performance brute.
 - **Methodologie / reflexion / approche**:
   - E2 cible trois objectifs operationnels: reduire le temps de simulation, attenuer les oscillations, et limiter les comportements opportunistes de type "tourner autour de la cible".
   - Les changements sont volontairement moderes pour rester comparables a E1 et isoler les effets principaux.
+  - Justification des changements lies au lag:
+    - `N=150` reduit directement la duree totale du run et accelere le cycle test-analyse.
+    - `batch_size=128` diminue le cout de chaque mise a jour DQN (moins de calcul par backward pass), ce qui aide a limiter la charge CPU/GPU pendant l'entrainement dans l'Editor Unity.
+    - `max steps=400` evite des episodes tres longs peu informatifs, ce qui reduit aussi le temps de simulation.
 - **Attentes avant execution**:
   - Diminution du temps total de run grace a `N` plus faible, `batch_size` plus petit et episodes plus courts.
   - Courbe reward potentiellement un peu moins explosive (moins de points shaping par step + `lr` plus faible).
   - Baisse des episodes longs sans succes terminal, grace au timeout plus strict et plus penalise.
+  - Verification attendue du lag: baisse de `run_total_seconds` et de `mean_episode_elapsed_seconds` par rapport a E1.
 - **Resultats observes**:
   - [ ]
 - **Interpretation rapide**:

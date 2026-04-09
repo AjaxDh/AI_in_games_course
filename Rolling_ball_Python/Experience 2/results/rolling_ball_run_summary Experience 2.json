@@ -1,0 +1,19 @@
+{
+  "run_started_at": "2026-04-09T13:08:27",
+  "input_size": 9,
+  "output_size": 5,
+  "batch_size": 128,
+  "gamma": 0.99,
+  "F": 500,
+  "lr": 7e-05,
+  "eps_start": 0.9,
+  "eps_end": 0.05,
+  "eps_decay": 1500,
+  "n_episode": 150,
+  "total_steps": 41502,
+  "run_total_seconds": 842.105,
+  "episodes_completed": 150,
+  "mean_episode_reward": 0.3837333285063505,
+  "mean_episode_duration": 276.68,
+  "mean_episode_elapsed_seconds": 5.5742936553333005
+}

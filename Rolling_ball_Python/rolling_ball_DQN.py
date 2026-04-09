@@ -87,13 +87,13 @@ class Dqn():
         Args:
             input_size (int): Number of observations given to the agent
             output_size (int): Number of possible actions performed by the agent
-            batch_size (int, optional): Number of transitions sampled from the replay buffer. Defaults to 256.
-            gamma (float, optional): Discount factor. Defaults to 0.95.
+            batch_size (int, optional): Number of transitions sampled from the replay buffer. Defaults to 128.
+            gamma (float, optional): Discount factor. Defaults to 0.99.
             F (float, optional): Update rate of the target network. Defaults to 500.
-            lr (_type_, optional): Learning rate of the optimiser. Defaults to 1e-3.
+            lr (_type_, optional): Learning rate of the optimiser. Defaults to 7e-5.
             eps_start (float, optional): Starting value of epsilon. Defaults to 0.9.
             eps_end (float, optional): Final value of epsilon. Defaults to 0.05.
-            eps_decay (int, optional): Rate of the exponential decay of epsilon. Higher value means slower decay. Defaults to 2000.
+            eps_decay (int, optional): Rate of the exponential decay of epsilon. Higher value means slower decay. Defaults to 1500.
         """
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
