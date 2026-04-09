@@ -124,11 +124,11 @@ public class rollerAgentDiscrete : Agent
             // Getting closer or further from target
         if(distanceToTarget < lastDistanceToTarget)
         {
-            AddReward(0.02f);
+            AddReward(0.01f);
         }
         else
         {
-            AddReward(-0.02f);
+            AddReward(-0.01f);
         }
         lastDistanceToTarget = distanceToTarget;
         
@@ -151,9 +151,9 @@ public class rollerAgentDiscrete : Agent
     private void FixedUpdate()
     {
         
-        if(this.StepCount >= 500)
+        if(this.StepCount >= 400)
         {
-            SetReward(-0.5f);
+            SetReward(-0.7f);
             EndEpisode();
         }
     }

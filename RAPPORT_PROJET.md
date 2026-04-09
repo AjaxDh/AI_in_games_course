@@ -85,7 +85,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 | Experience | Gamma | N episodes | lr | Epsilon (start/end/decay) | F | B | M | NN | Rewards | Attente principale |
 |---|---:|---:|---:|---|---:|---:|---:|---|---|---|
 | E1 (baseline) | 0.99 | 250 | 1e-4 | 0.9 / 0.05 / 2000 | 500 | 256 | 100000 | [9,512,512,5] | shaping +/-0.02, terminal +1/-1, timeout -0.5 | Baseline stable a lancer |
-| E2 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+| E2 | 0.99 | 150 | 7e-5 | 0.9 / 0.05 / 1500 | 500 | 128 | 100000 | [9,512,512,5] | shaping +/-0.01, terminal +1/-1, timeout -0.7, max steps 400 | Reduire le temps de run et les spikes tout en limitant le risque de "circling" |
 | E3 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E4 | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | E5 (optionnel) | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
@@ -101,17 +101,28 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Attentes avant execution**:
   - Verifier la stabilite globale de la courbe reward et la tendance de duree moyenne des episodes.
 - **Resultats observes**:
-  - [A completer avec le plot]
+  - Le run est complet: `episodes_completed=250`, `total_steps=47564`, `run_total_seconds=1247.941`.
+  - Les moyennes globales sont positives: `mean_episode_reward=1.778`, `mean_episode_duration=190.256`.
+  - La courbe reward monte progressivement en debut d'entrainement, puis se stabilise avec une moyenne lissee positive et des pics residuels.
+  - La duree des episodes baisse globalement, mais reste tres variable avec des pics tout au long du run.
+  - Des ecarts brusques apparaissent entre episodes consecutifs (ex. episodes 12-15), ce qui est compatible avec l'alea du spawn de la cible et l'exploration epsilon-greedy.
+  - Attention d'interpretation: le label du graphe indique "Last reward", mais la serie tracee correspond en pratique a la reward cumulee par episode.
 - **Interpretation rapide**:
-  - [ ]
+  - E1 valide la base DQN: l'agent apprend a atteindre la cible plus regulierement en fin de run.
+  - Les spikes ne signifient pas un bug en soi; ils sont attendus dans un environnement stochastique avec exploration.
+  - Le risque principal a surveiller est le "reward shaping farming" (l'agent gagne des points en tournant autour de la cible), ce qui motive une reduction du shaping et un timeout plus penalise en E2.
 
 #### Experience E2 - [Titre]
 - **Choix des parametres**:
-  - [ ]
+  - Hyperparametres Python: `gamma=0.99`, `N=150`, `lr=7e-5`, `epsilon=0.9/0.05/1500`, `F=500`, `batch_size=128`, `memory=100000`, reseau `[9,512,512,5]`.
+  - Reward design Unity: shaping `+0.01/-0.01` (au lieu de `+/-0.02`), terminal `+1/-1` conserve, timeout `-0.7` (au lieu de `-0.5`) et limite episode `400` steps (au lieu de `500`).
 - **Methodologie / reflexion / approche**:
-  - [ ]
+  - E2 cible trois objectifs operationnels: reduire le temps de simulation, attenuer les oscillations, et limiter les comportements opportunistes de type "tourner autour de la cible".
+  - Les changements sont volontairement moderes pour rester comparables a E1 et isoler les effets principaux.
 - **Attentes avant execution**:
-  - [ ]
+  - Diminution du temps total de run grace a `N` plus faible, `batch_size` plus petit et episodes plus courts.
+  - Courbe reward potentiellement un peu moins explosive (moins de points shaping par step + `lr` plus faible).
+  - Baisse des episodes longs sans succes terminal, grace au timeout plus strict et plus penalise.
 - **Resultats observes**:
   - [ ]
 - **Interpretation rapide**:

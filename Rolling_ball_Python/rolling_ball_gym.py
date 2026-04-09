@@ -31,14 +31,14 @@ def main():
 	# Parameters
 	input_size = 9
 	output_size = 5
-	batch_size = 256
+	batch_size = 128
 	gamma = 0.99
 	F = 500
-	lr = 1e-4
+	lr = 7e-5
 	eps_start = 0.9
 	eps_end = 0.05
-	eps_decay = 2000
-	n_episode = 250
+	eps_decay = 1500
+	n_episode = 150
 
 	os.makedirs(RESULTS_DIR, exist_ok=True)
 	os.makedirs(CHECKPOINT_DIR, exist_ok=True)
