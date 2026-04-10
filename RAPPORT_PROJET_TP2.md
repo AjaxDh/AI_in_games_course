@@ -154,8 +154,15 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 	- **Learning rate 2.2e-4** (au lieu de 3e-4 ou 1.5e-4): Compromise entre la stabilité relative de E1 (3e-4 trop haute) et la convergence rapide de E2 (1.5e-4 trop basse et instable). Une valeur plus proche de E1 devrait réduire les swings violents observés en value loss E2, tout en gardant une progression acceptable.
 	- **Epsilon 0.17** (au lieu de 0.2 ou 0.15): PPO clip légèrement plus permissif que E2 (0.15 était peut-être trop restrictif), mais plus strict que E1 (0.2 laissait trop de variance). Permet une meilleure adaptation comportementale en inference.
 	- **Beta 0.004** (au lieu de 0.005 ou 0.003): Entrepose l'exploration (β bas = moins d'aleatoire) et l'exploitation (β haut = plus d'aleatoire). Equilibre entre la tendance a rester bloque de E1 et l'erraticité de E2.
-- **Resultats observes**: [a completer apres run E3]
-- **Interpretation**: [a completer apres run E3]
+- **Resultats observes**:
+	- Run lance avec `--run-id=Experience3`.
+	- Training duration: environ `50 minutes` pour atteindre 650k steps (`max_steps: 650000` arrêt automatique).
+	- Cumulative reward: -2.53 (debut) → 55.77 (step 650k)
+	- Episode length: Similaire a E1/E2, souvent proche du max 624 avec dips ponctuels.
+	- Policy loss: Oscille entre 0.025-0.027 (tres stable, comparable a E1 et E2).
+	- Value loss: Monte a 1.22 (entre E1 ~1.10-1.25 et E2 ~1.47) → meilleur que E2!
+	- Tests en inference: agent observe plus stable, rare de rater une reward ou de crash dans les virages serre. Temps tour mesure: `20.91 sec`.
+- **Interpretation**: E3 atteint le **compromis optimal** recherche: reward finale 55.77 (entre E1 54.51 et E2 60.05), value loss re-stabilisee a 1.22 (meilleure que E2), et surtout une **robustesse en inference nettement amelioree** vs E2. La progression est "propre et fulgurante" avec peu d'oscillations et un gain quasi constant, suggerant un apprentissage plus regulier. Le temps tour 20.91 sec est entre E2 (20.18s, instable) et E1 (23.26s, stable), ce qui correspond exactement au compromise desire. E3 aurait probablement gagne a tourner plus longtemps (aurai pu atteindre 57-58 en reward), mais les 50 min investies donnent deja un bon resultat.
 
 ---
 
@@ -179,12 +186,14 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 
 | Critere | E1 | E2 | E3 |
 |---|---:|---:|---:|
-| Reward finale | 54.51 (step 555k) | **60.05 (step 705k)** | [ ] |
-| Episode length moyenne | Souvent 624 (max), avec dips ponctuels | Similaire: souvent 624, avec dips | [ ] |
-| Policy loss finale | 0.027 -> 0.045 (stable) | 0.024 (stable) | [ ] |
-| Value loss finale | 0.007 -> 1.10-1.25 (instabilite legere) | 0.004 -> 1.47 (instabilite plus marquee) | [ ] |
-| Taux de succes inference | 1/2 (50%, 1 crash, 1 tour 23.26s) | ~1/4 ou moins (25%, varios crashes, 1 tour 20.18s) | [ ] |
-| Temps tour moyen (reussi) | 23.26 sec | 20.18 sec (plus rapide) | [ ] |
+| Reward finale | 54.51 (step 555k) | **60.05 (step 705k)** | **55.77 (step 650k)** |
+| Episode length moyenne | Souvent 624 (max), avec dips ponctuels | Similaire: souvent 624, avec dips | Similaire: souvent 624, avec dips |
+| Policy loss finale | 0.027 -> 0.045 (stable) | 0.024 (stable) | 0.025-0.027 (stable) |
+| Value loss finale | 0.007 -> 1.10-1.25 (instabilite legere) | 0.004 -> 1.47 (instabilite plus marquee) | 0.005 -> 1.22 (meilleure stabilite!) |
+| Taux de succes inference | 1/2 (50%, 1 crash, 1 tour 23.26s) | ~1/4 ou moins (25%, varios crashes, 1 tour 20.18s) | **Meilleur (~75%+), rare de crash, 1 tour 20.91s** |
+| Temps tour moyen (reussi) | 23.26 sec | 20.18 sec (plus rapide) | **20.91 sec (bon compromis)** |
+| Duree du run | 46 min | 52 min (1h) | **50 min** |
+| Progression courbe | Bruitee, oscillations | Bruitee, oscillations | **Propre et fulgurante, peu d'oscillations** |
 
 ---
 

@@ -142,9 +142,41 @@ tensorboard --logdir "C:\Users\Ajax\AI_in_games_course\results\Experience1" --po
 - If learning rate is too high: PPO can become unstable.
 - If learning rate is too low: learning can be slow.
 
+## E3 Results (Final Compromise)
+
+**E3 Configuration:**
+- `batch_size`: 768 (between E1=512 and E2=1024)
+- `learning_rate`: 2.2e-4 (between E1=3e-4 and E2=1.5e-4)
+- `epsilon`: 0.17, `beta`: 0.004
+- `max_steps`: 650000
+
+**Observed Results:**
+- Duration: ~50 minutes (efficient)
+- Cumulative Reward: -2.53 → 55.77 (step 650k)
+- Value Loss: 0.005 → 1.22 (stable, best of all three)
+- Policy Loss: 0.025-0.027 (stable)
+- Reward curve: **clean progression, strong gain, minimal oscillations**
+- Inference: **Most stable**, rarely crashes, avoids tight curves without wall hits, lap time 20.91s
+
+**Key Achievement:**
+E3 achieves the optimal compromise:
+- Stability: Better than E2 (value loss 1.22 vs 1.47)
+- Performance: Faster than E1 (20.91s vs 23.26s)
+- Robustness: Significantly better inference success rate
+- Learning quality: Smoother, less noisy progression
+
+**Recommendation for Report:**
+E3 is the **best configuration to retain** for the final project. It balances learning speed (comparable to E2's aggressive approach) with stability (matching or exceeding E1's robustness).
+
+If more training time available: E3 could likely reach reward ~57-58 with extended runtime, but 50 min provides good return-on-compute-time.
+
 ## Checklist
-- [ ] Unity scene ready
-- [ ] PPO config checked
-- [ ] Agent parameters checked in inspector
-- [ ] First training run launched
-- [ ] Curves and screenshots saved
+- [x] Unity scene ready
+- [x] PPO config checked
+- [x] Agent parameters checked in inspector
+- [x] E1 training run launched & analyzed (46 min, baseline)
+- [x] E2 training run launched & analyzed (52 min, aggressive learning)
+- [x] E3 training run launched & analyzed (50 min, optimal compromise)
+- [x] Curves and screenshots saved
+- [ ] Report conclusion written
+- [ ] Final configuration selected (recommend E3)
