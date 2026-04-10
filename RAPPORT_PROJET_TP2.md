@@ -274,7 +274,7 @@ Les trois experiences ont montre que l'ajustement du batch size et du learning r
 | `beta` | 0.004 | Equilibre exploration/exploitation entre E1 (0.005) et E2 (0.003) |
 | `lambda` | 0.95 | Inchange, GAE discount factor optimal |
 | `num_epoch` | 3 | Inchange, suffisant pour convergence |
-| `max_steps` | 650000 | Empiriquement optimal (~50 min) |
+| `max_steps` | 650000 | Limite pratique choisie pour un run d'environ 50 min |
 
 **Resultat E3 :** Reward 55.77 (step 650k), Value Loss 1.22, temps tour 20.91s, stabilite en inference ~75%+ de succes.
 
