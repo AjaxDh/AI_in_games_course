@@ -106,11 +106,14 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience1`.
 	- 🖼️ **[IMAGE REQUISE - E1 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E1 seule.
+	<!-- ILLUSTRATION_E1_REWARD: inserer ici screenshot TensorBoard reward E1 montrant la hausse progressive avec dips et remontee vers 54.51 -->
 	- La courbe `Environment/Cumulative Reward` monte globalement tout le long du run.
 	- D'apres l'export JSON, la valeur passe d'environ `-2.57` au debut a un pic proche de `65.22` (step `545000`), puis termine vers `54.51` (step `555000`) apres un dip suivi d'une remontee.
 	- 🖼️ **[IMAGE REQUISE - E1 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E1.
+	<!-- ILLUSTRATION_E1_EPISODE: inserer ici screenshot TensorBoard episode length E1 montrant bruit avec pics a 624 -->
 	- `Environment/Episode Length` reste bruitee et souvent proche du plafond (`624`), avec quelques baisses ponctuelles (par exemple autour de `453` au step `80000`).
-	- 🖼️ **[IMAGE REQUISE - E1 Losses]** Capture TensorBoard de `Losses/Policy Loss` et `Losses/Value Loss` pour E1.
+	- 🖼️ **[IMAGE REQUISE - E1 Losses]** Capture TensorBoard de `Losses/Policy Loss` ET `Losses/Value Loss` pour E1 ensemble.
+	<!-- ILLUSTRATION_E1_LOSSES: inserer ici screenshot TensorBoard montrant policy loss stable 0.027-0.045 et value loss montant 0.007->1.10 -->
 	- `Losses/Policy Loss` oscille dans une plage assez stable, globalement entre `0.027` et `0.045`.
 	- `Losses/Value Loss` augmente progressivement (d'environ `0.007` au debut jusqu'a ~`1.10` en fin de run), avec des fluctuations.
 	- Test en inference apres entrainement: premier essai en echec (collision mur), deuxieme essai valide en `23.26 s` pour un tour.
@@ -136,10 +139,13 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience2`.
 	- 🖼️ **[IMAGE REQUISE - E2 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E2.
+	<!-- ILLUSTRATION_E2_REWARD: inserer ici screenshot TensorBoard reward E2 montrant la hausse jusqu'a 60.05 mais avec oscillations plus fortes -->
 	- Cumulative reward: -2.53 (debut) → 60.05 (step 705k, **plus eleve que E1 final!**)
 	- 🖼️ **[IMAGE REQUISE - E2 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E2.
+	<!-- ILLUSTRATION_E2_EPISODE: inserer ici screenshot TensorBoard episode length E2 montrant bruit similaire a E1 -->
 	- Episode length: Similaire a E1, souvent proche du max 624 avec dips ponctuels.
-	- 🖼️ **[IMAGE REQUISE - E2 Losses]** Capture TensorBoard de `Losses/Policy Loss` et `Losses/Value Loss` pour E2 (montrer l'elevation de value loss a 1.47).
+	- 🖼️ **[IMAGE REQUISE - E2 Losses]** Capture TensorBoard de `Losses/Policy Loss` ET `Losses/Value Loss` pour E2 (bien montrer value loss qui monte a 1.47!).
+	<!-- ILLUSTRATION_E2_LOSSES: inserer ici screenshot montrant policy loss stable mais VALUE LOSS VISIBLEMENT PLUS HAUTE que E1, atteignant 1.47 en fin -->
 	- Policy loss: Oscille entre 0.024-0.030 (stable, comparable a E1).
 	- Value loss: Monte a 1.47 (legerement plus instabile que E1 qui atteignait max 1.10-1.25).
 	- Tests en inference: plusieurs crashes et comportements erratiques (agent reste bloque apres avoir rate une reward, crash au debut d'autres parcours). Un essai a complete le tour en `20.18 sec` (plus rapide que E1).
@@ -163,11 +169,14 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience3`.
 	- Training duration: environ `50 minutes` pour atteindre 650k steps (`max_steps: 650000` arrêt automatique).
-	- 🖼️ **[IMAGE REQUISE - E3 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E3 (montrer progression propre et fulgurante).
+	- 🖼️ **[IMAGE REQUISE - E3 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E3 (montrer la progression PROPRE et FULGURANTE!).
+	<!-- ILLUSTRATION_E3_REWARD_CLEAN: inserer ici screenshot TensorBoard reward E3 montrant courbe tres reguliere avec peu d'oscillations, progression constante vers 55.77 -->
 	- Cumulative reward: -2.53 (debut) → 55.77 (step 650k)
 	- 🖼️ **[IMAGE REQUISE - E3 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E3.
+	<!-- ILLUSTRATION_E3_EPISODE: inserer ici screenshot TensorBoard episode length E3 montrant meme bruit que E1/E2 -->
 	- Episode length: Similaire a E1/E2, souvent proche du max 624 avec dips ponctuels.
-	- 🖼️ **[IMAGE REQUISE - E3 Losses]** Capture TensorBoard de `Losses/Policy Loss` et `Losses/Value Loss` pour E3 (montrer value loss a 1.22, meilleur que E2).
+	- 🖼️ **[IMAGE REQUISE - E3 Losses]** Capture TensorBoard de `Losses/Policy Loss` ET `Losses/Value Loss` pour E3 (IMPORTANT: montrer value loss a 1.22, cle entre E1 et E2!).
+	<!-- ILLUSTRATION_E3_LOSSES: inserer ici screenshot montrant policy loss stable ET VALUE LOSS A 1.22 (meilleur que E2!) - c'est la difference cruciale -->
 	- Policy loss: Oscille entre 0.025-0.027 (tres stable, comparable a E1 et E2).
 	- Value loss: Monte a 1.22 (entre E1 ~1.10-1.25 et E2 ~1.47) → meilleur que E2!
 	- Tests en inference: agent observe plus stable, rare de rater une reward ou de crash dans les virages serre. Temps tour mesure: `20.91 sec`.
@@ -178,18 +187,36 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 ## Resultats
 
 ### Figures a mettre dans le rapport
-- **Figure 1 (Reward):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Environment/Cumulative Reward` montrant E1, E2, E3 ensemble (ou separement). Commenter la hausse de E1, l'agressivite de E2, et la progression propre de E3.
-- **Figure 2 (Episode Length):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Environment/Episode Length`. Noter que les trois configs restent souvent au max 624, mais E3 est plus regulier.
-- **Figure 3 (Policy Loss):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Losses/Policy Loss`. Montrer la stabilite relative des trois (E3 entre E1 et E2).
-- **Figure 4 (Value Loss):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Losses/Value Loss`. **IMPORTANT** : bien mettre en evidence que E2 monte a 1.47 (instable) et E3 reste a 1.22 (stable). C'est la difference cle!
+- **Figure 1 (Reward):** 🖼️ **[IMAGE REQUISE - Comparaison E1/E2/E3]** Capture TensorBoard de `Environment/Cumulative Reward` montrant les 3 runs ensemble (ou cote a cote si scrollable). Commenter la hausse de E1, l'agressivite de E2, et la progression propre de E3.
+<!-- ILLUSTRATION_F1_REWARD_COMPARISON: inserer ici screenshot TensorBoard avec 3 courbes reward superposees (ou 3 captures separees) pour bien voir: E1 monte puis stabilise, E2 monte plus haut mais erratic, E3 monte proprement -->
 
-### Images / captures a commenter
-- **Figure A:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture au depart de la track1 scene (agent initialise correctement dans le start position).
-- **Figure B:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture qui atteint la cible/target (montre que le reward shaping fonctionne).
-- **Figure C:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** (Optionnel) Voiture qui crash ou sort de la route (ex: E2 qui crash dans un virage serre).
-- **Figure D:** 🖼️ **[IMAGE REQUISE - Screenshot TensorBoard]** Courbe reward de E1 seule (avec annotations sur les dips et climax).
-- **Figure E:** 🖼️ **[IMAGE REQUISE - Screenshot TensorBoard]** Courbe episode length de E1 (pour montrer le bruit).
-- **Figure F:** 🖼️ **[IMAGE REQUISE - Screenshot TensorBoard]** (Optionnel) Comparaison E3 vs E2 policy loss + value loss cote a cote pour bien voir la difference de stabilite.
+- **Figure 2 (Episode Length):** 🖼️ **[IMAGE REQUISE - Comparaison Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour les 3 configs. Noter que les trois configs restent souvent au max 624, mais E3 est plus regulier.
+<!-- ILLUSTRATION_F2_EPISODE_COMPARISON: inserer ici screenshot montrant les 3 courbes episode length superposees ou cote a cote -->
+
+- **Figure 3 (Policy Loss):** 🖼️ **[IMAGE REQUISE - Policy Loss E1/E2/E3]** Capture TensorBoard de `Losses/Policy Loss` pour les 3. Montrer la stabilite relative des trois (E3 entre E1 et E2).
+<!-- ILLUSTRATION_F3_POLICY_LOSS: inserer ici screenshot montrant policy loss qui reste stable pour tous, oscillant autour 0.027-0.030 -->
+
+- **Figure 4 (Value Loss - CRUCIAL):** 🖼️ **[IMAGE REQUISE - Value Loss E1/E2/E3 ENSEMBLE]** Capture TensorBoard de `Losses/Value Loss` montrant clairement E1, E2, E3 pour BIEN VOIR LA DIFFERENCE. **IMPORTANT** : bien mettre en evidence que **E2 monte a 1.47** (instable/erratique) et **E3 reste a 1.22** (meilleur compromis) vs E1 ~1.10-1.25. **C'est la courbe cle qui explique pourquoi E3 gagne!**
+<!-- ILLUSTRATION_F4_VALUE_LOSS_KEY: inserer ici screenshot TensorBoard value loss comparatif MONTRANT CLAIREMENT que E2 diverge (1.47) tandis que E3 reste stable (1.22) - c'est le smoking gun -->
+
+### Images / captures a commenter (comportement & gameplay)
+- **Figure A:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture au depart de la track1 scene (agent initialise correctement dans le start position, avant entrainement).
+<!-- ILLUSTRATION_A_START: inserer ici screenshot Unity montrant voiture au spawn start, prealablement avant lancement training -->
+
+- **Figure B:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture qui atteint la cible/target (montre que le reward shaping fonctionne, donne l'intuition du but du jeu).
+<!-- ILLUSTRATION_B_TARGET: inserer ici screenshot Unity montrant voiture en contact/proche cible en fin d'episode reussi -->
+
+- **Figure C:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** (Optionnel) Voiture qui crash ou sort de la route (ex: E2 qui crash dans un virage serre, illustre la robustesse inferieure observee).
+<!-- ILLUSTRATION_C_CRASH: inserer ici screenshot Unity montrant voiture qui a heurte mur ou est sortie de piste - optionnel mais instructif pour E2 -->
+
+- **Figure D:** 🖼️ **[IMAGE REQUISE - Zoom TensorBoard]** Courbe reward de E1 seule (avec region annotees sur les zones bruitees early game et stabilisees late game).
+<!-- ILLUSTRATION_D_E1_DETAIL: inserer ici screenshot TensorBoard zoome sur reward E1 avec annotations montrant debut bruite, puis milieu mieux, puis fin plus stable -->
+
+- **Figure E:** 🖼️ **[IMAGE REQUISE - Zoom TensorBoard]** Courbe episode length de E1 (pour montrer le bruit inherent de ce metrique, utilise comme diagnostic de chaos vs stabilite).
+<!-- ILLUSTRATION_E_E1_EPISODE_DETAIL: inserer ici screenshot TensorBoard zoome sur episode length E1 montrant pics a 624 entrelaces avec dips -->
+
+- **Figure F:** 🖼️ **[IMAGE REQUISE - Comparaison Value Loss E2 vs E3]** (Optionnel mais recommande) Capture TensorBoard montrant value loss de E2 et E3 cote a cote ou superposees pour bien voir que E2 diverge (1.47) tandis que E3 reste discipline (1.22). Annote les deux courbes.
+<!-- ILLUSTRATION_F_VALUE_LOSS_E2_VS_E3: inserer ici screenshot TensorBoard comparant directement value loss E2 (HIGH, instable) vs E3 (STABLE, low) - le contrast clarifie pourquoi E3 gagne -->
 
 ### Comparaison finale
 

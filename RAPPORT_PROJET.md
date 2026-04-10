@@ -92,8 +92,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Attentes avant execution**:
   - Verifier la stabilite globale de la courbe reward et la tendance de duree moyenne des episodes.
 - **Resultats observes**:
-  - [Illustration conseillée E1-A] Capture d'une zone avec ecarts brusques entre episodes consecutifs (spikes).
-  - [Illustration conseillée E1-B] Capture d'une zone de fin de run montrant la stabilisation relative.
+  - 🖼️ **[IMAGE REQUISE - E1-A Spikes]** Capture d'une zone avec ecarts brusques entre episodes consecutifs (spikes).
+  - 🖼️ **[IMAGE REQUISE - E1-B Stabilisation]** Capture d'une zone de fin de run montrant la stabilisation relative.
   - Le run est complet: `episodes_completed=250`, `total_steps=47564`, `run_total_seconds=1247.941`.
   - Les moyennes globales sont positives: `mean_episode_reward=1.778`, `mean_episode_duration=190.256`.
   - En execution locale (Unity Editor), des ralentissements ont ete observes sur la machine pendant certains passages de l'entrainement.
@@ -126,8 +126,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Baisse des episodes longs sans succes terminal, grace au timeout plus strict et plus penalise.
   - Verification attendue du lag: baisse de `run_total_seconds` et de `mean_episode_elapsed_seconds` par rapport a E1.
 - **Resultats observes**:
-  - [Illustration conseillée E2-A] Capture d'un episode se terminant au timeout (limite atteinte sans succes).
-  - [Illustration conseillée E2-B] Capture de la courbe reward montrant une stabilisation faible autour de 0.
+  - 🖼️ **[IMAGE REQUISE - E2-A Timeout]** Capture d'un episode se terminant au timeout (limite atteinte sans succes).
+  - 🖼️ **[IMAGE REQUISE - E2-B Reward Faible]** Capture de la courbe reward montrant une stabilisation faible autour de 0.
   - Run complet: `episodes_completed=150`, `total_steps=41502`, `run_total_seconds=842.105`.
   - Moyennes globales: `mean_episode_reward=0.384`, `mean_episode_duration=276.68`, `mean_episode_elapsed_seconds=5.574`.
   - Les spikes restent importants sur la reward et sur la duree; la stabilisation est moins nette que prevu.
@@ -156,8 +156,8 @@ Le rapport peut etre raconte comme une suite d'iterations:
   - Courbe reward plus lisible (moins de saturation autour des episodes coupes a 400).
   - Duree de run raisonnable (N=220) tout en laissant plus de temps d'apprentissage que E2.
 - **Resultats observes**:
-  - [Illustration conseillée E3-A] Capture d'une sequence ou l'agent se rapproche de la cible mais ne convertit pas toujours en succes.
-  - [Illustration conseillée E3-B] Capture de la courbe montrant une progression globale mais encore des spikes visibles.
+  - 🖼️ **[IMAGE REQUISE - E3-A Approche cible]** Capture d'une sequence ou l'agent se rapproche de la cible mais ne convertit pas toujours en succes.
+  - 🖼️ **[IMAGE REQUISE - E3-B Progression avec spikes]** Capture de la courbe montrant une progression globale mais encore des spikes visibles.
   - Le run est complet: `episodes_completed=220`, `total_steps=54110`, `run_total_seconds=1481.531`.
   - Moyennes globales: `mean_episode_reward=0.5226`, `mean_episode_duration=245.95`, `mean_episode_elapsed_seconds=6.696`.
   - Repartition des terminaisons:
@@ -182,9 +182,9 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - **Attentes avant execution**:
   - Verifier si une baisse du learning rate et un temps d'apprentissage plus long reduisent les oscillations sans detruire le taux de succes.
 - **Resultats observes**:
-  - [Illustration conseillée E4-A] Capture de debut/milieu de run encore variable (pour montrer que la variabilite n'a pas disparu).
-  - [Illustration conseillée E4-B] Capture de fin de run plus reguliere que E3 (moins de spikes marquants).
-  - [Illustration conseillée E4-C] Capture comportementale de l'agent: approche cible plus propre, mais quelques non-contacts residuels possibles.
+  - 🖼️ **[IMAGE REQUISE - E4-A Debut variable]** Capture de debut/milieu de run encore variable (pour montrer que la variabilite n'a pas disparu).
+  - 🖼️ **[IMAGE REQUISE - E4-B Fin lissee]** Capture de fin de run plus reguliere que E3 (moins de spikes marquants).
+  - 🖼️ **[IMAGE REQUISE - E4-C Comportement cible]** Capture comportementale de l'agent: approche cible plus propre, mais quelques non-contacts residuels possibles.
   - Le run final est complet: `episodes_completed=250`, `total_steps=63588`, `run_total_seconds=1396.504`.
   - Moyennes globales: `mean_episode_reward=0.9013`, `mean_episode_duration=254.352`, `mean_episode_elapsed_seconds=5.5687`.
   - Repartition des terminaisons:
@@ -204,20 +204,20 @@ Le rapport peut etre raconte comme une suite d'iterations:
 Cette section sert de synthese globale. Les details d'observation et d'interpretation sont documentes dans chaque experience.
 
 ### Resultats bruts
-- Figure 1: [courbe reward par episode]
-- Figure 2: [courbe duree par episode]
-- Figure 3 (optionnel): [moving average ou taux de succes]
+- 🖼️ **[IMAGE REQUISE - Figure 1]** [courbe reward par episode]
+- 🖼️ **[IMAGE REQUISE - Figure 2]** [courbe duree par episode]
+- 🖼️ **[IMAGE REQUISE - Figure 3 - optionnel]** [moving average ou taux de succes]
 
 ### Emplacements recommandes pour images comportementales
-- Figure C1 (E1 - Variance): [A inserer - exemple de spikes en debut/milieu de run]
-- Figure C2 (E1 - Stabilisation): [A inserer - exemple de segment plus stable en fin de run]
-- Figure C3 (E2 - Timeout): [A inserer - episode qui atteint la limite de steps]
-- Figure C4 (E2 - Instabilite): [A inserer - courbe reward proche de 0 avec oscillations]
-- Figure C5 (E3 - Progression): [A inserer - progression visible mais irregularite persistante]
-- Figure C6 (E3 - Approche sans conversion): [A inserer - agent proche cible mais contact final non garanti]
-- Figure C7 (E4 - Debut variable): [A inserer - passage encore turbulent]
-- Figure C8 (E4 - Fin plus lissee): [A inserer - passage de fin de run avec moins de spikes]
-- Figure C9 (E4 - Comportement cible): [A inserer - approche plus propre de la cible]
+- 🖼️ **[IMAGE REQUISE - C1 E1 Variance]** [A inserer - exemple de spikes en debut/milieu de run]
+- 🖼️ **[IMAGE REQUISE - C2 E1 Stabilisation]** [A inserer - exemple de segment plus stable en fin de run]
+- 🖼️ **[IMAGE REQUISE - C3 E2 Timeout]** [A inserer - episode qui atteint la limite de steps]
+- 🖼️ **[IMAGE REQUISE - C4 E2 Instabilite]** [A inserer - courbe reward proche de 0 avec oscillations]
+- 🖼️ **[IMAGE REQUISE - C5 E3 Progression]** [A inserer - progression visible mais irregularite persistante]
+- 🖼️ **[IMAGE REQUISE - C6 E3 Approche sans conversion]** [A inserer - agent proche cible mais contact final non garanti]
+- 🖼️ **[IMAGE REQUISE - C7 E4 Debut variable]** [A inserer - passage encore turbulent]
+- 🖼️ **[IMAGE REQUISE - C8 E4 Fin plus lissee]** [A inserer - passage de fin de run avec moins de spikes]
+- 🖼️ **[IMAGE REQUISE - C9 E4 Comportement cible]** [A inserer - approche plus propre de la cible]
 
 ### Resultats attendus vs observes (synthese)
 - **Ce qui etait attendu**:
