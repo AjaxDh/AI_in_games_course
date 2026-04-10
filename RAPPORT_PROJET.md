@@ -8,12 +8,12 @@ Auteur: Ajax DESHAYES--HUET
 ### Contexte
 Ce projet porte sur l'entrainement d'un agent de Reinforcement Learning dans un environnement Unity (ML-Agents), avec un controle discret des actions pour deplacer une balle vers une cible (cube).
 
-L'agent est entraine avec un algorithme Deep Q-Network (DQN), implante en Python, qui interagit avec Unity via un wrapper Gym en python.
+L'agent est entraine avec un algorithme Deep Q-Network (DQN), implante en Python, qui interagit avec Unity via un wrapper Gym en Python.
 
 ### Objectifs
 - Concevoir et completer un agent DQN fonctionnel.
 - Etudier l'impact des hyperparametres et des recompenses sur l'apprentissage.
-- Comparer 4 experiences avec configurations differentes.
+- Comparer 4 experiences avec des configurations differentes.
 - Interpreter les resultats (performance, stabilite, limites).
 - Faire evoluer les objectifs au fil des experiences a partir des resultats observes.
 
@@ -52,7 +52,7 @@ Le rapport peut etre raconte comme une suite d'iterations:
 - Experience 1: base initiale apres completion des exercices.
 - Experience 2: ajustement pour reduire le lag et accelerer l'experience.
 - Experience 3: correction d'un sous-apprentissage ou d'une instabilite observee.
-- Experience 4: affinement final, validation de la configuration retenue et reduction des spikes* encore trop presents.
+- Experience 4: affinement final, validation de la configuration retenue et reduction des spikes encore trop presents.
 ![spike](image.png)
 
 ### Tableau recapitulatif des experiences
@@ -216,4 +216,5 @@ Les resultats confirment un compromis net entre vitesse de simulation et stabili
 - Pour consolider ces conclusions: repeter les runs avec seed fixee, puis tester Double DQN si necessaire.
 
 ---
+
 

@@ -1,9 +1,6 @@
 # Rapport Projet RL - TP2 AI Driver Unity (PPO)
 
-Auteur: [Nom Prenom]
-Date: [JJ/MM/AAAA]
-Projet: Autonomous Car - PPO
-Matiere: [Nom du cours]
+Ajax DESHAYES--HUET
 
 ---
 
@@ -186,118 +183,25 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 
 ## Resultats
 
-### Figures a mettre dans le rapport
-- **Figure 1 (Reward):** 🖼️ **[IMAGE REQUISE - Comparaison E1/E2/E3]** Capture TensorBoard de `Environment/Cumulative Reward` montrant les 3 runs ensemble (ou cote a cote si scrollable). Commenter la hausse de E1, l'agressivite de E2, et la progression propre de E3.
-<!-- ILLUSTRATION_F1_REWARD_COMPARISON: inserer ici screenshot TensorBoard avec 3 courbes reward superposees (ou 3 captures separees) pour bien voir: E1 monte puis stabilise, E2 monte plus haut mais erratic, E3 monte proprement -->
-
-- **Figure 2 (Episode Length):** 🖼️ **[IMAGE REQUISE - Comparaison Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour les 3 configs. Noter que les trois configs restent souvent au max 624, mais E3 est plus regulier.
-<!-- ILLUSTRATION_F2_EPISODE_COMPARISON: inserer ici screenshot montrant les 3 courbes episode length superposees ou cote a cote -->
-
-- **Figure 3 (Policy Loss):** 🖼️ **[IMAGE REQUISE - Policy Loss E1/E2/E3]** Capture TensorBoard de `Losses/Policy Loss` pour les 3. Montrer la stabilite relative des trois (E3 entre E1 et E2).
-<!-- ILLUSTRATION_F3_POLICY_LOSS: inserer ici screenshot montrant policy loss qui reste stable pour tous, oscillant autour 0.027-0.030 -->
-
-- **Figure 4 (Value Loss - CRUCIAL):** 🖼️ **[IMAGE REQUISE - Value Loss E1/E2/E3 ENSEMBLE]** Capture TensorBoard de `Losses/Value Loss` montrant clairement E1, E2, E3 pour BIEN VOIR LA DIFFERENCE. **IMPORTANT** : bien mettre en evidence que **E2 monte a 1.47** (instable/erratique) et **E3 reste a 1.22** (meilleur compromis) vs E1 ~1.10-1.25. **C'est la courbe cle qui explique pourquoi E3 gagne!**
-<!-- ILLUSTRATION_F4_VALUE_LOSS_KEY: inserer ici screenshot TensorBoard value loss comparatif MONTRANT CLAIREMENT que E2 diverge (1.47) tandis que E3 reste stable (1.22) - c'est le smoking gun -->
-
-### Images / captures a commenter (comportement & gameplay)
-- **Figure A:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture au depart de la track1 scene (agent initialise correctement dans le start position, avant entrainement).
-<!-- ILLUSTRATION_A_START: inserer ici screenshot Unity montrant voiture au spawn start, prealablement avant lancement training -->
-
-- **Figure B:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture qui atteint la cible/target (montre que le reward shaping fonctionne, donne l'intuition du but du jeu).
-<!-- ILLUSTRATION_B_TARGET: inserer ici screenshot Unity montrant voiture en contact/proche cible en fin d'episode reussi -->
-
-- **Figure C:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** (Optionnel) Voiture qui crash ou sort de la route (ex: E2 qui crash dans un virage serre, illustre la robustesse inferieure observee).
-<!-- ILLUSTRATION_C_CRASH: inserer ici screenshot Unity montrant voiture qui a heurte mur ou est sortie de piste - optionnel mais instructif pour E2 -->
-
-- **Figure D:** 🖼️ **[IMAGE REQUISE - Zoom TensorBoard]** Courbe reward de E1 seule (avec region annotees sur les zones bruitees early game et stabilisees late game).
-<!-- ILLUSTRATION_D_E1_DETAIL: inserer ici screenshot TensorBoard zoome sur reward E1 avec annotations montrant debut bruite, puis milieu mieux, puis fin plus stable -->
-
-- **Figure E:** 🖼️ **[IMAGE REQUISE - Zoom TensorBoard]** Courbe episode length de E1 (pour montrer le bruit inherent de ce metrique, utilise comme diagnostic de chaos vs stabilite).
-<!-- ILLUSTRATION_E_E1_EPISODE_DETAIL: inserer ici screenshot TensorBoard zoome sur episode length E1 montrant pics a 624 entrelaces avec dips -->
-
-- **Figure F:** 🖼️ **[IMAGE REQUISE - Comparaison Value Loss E2 vs E3]** (Optionnel mais recommande) Capture TensorBoard montrant value loss de E2 et E3 cote a cote ou superposees pour bien voir que E2 diverge (1.47) tandis que E3 reste discipline (1.22). Annote les deux courbes.
-<!-- ILLUSTRATION_F_VALUE_LOSS_E2_VS_E3: inserer ici screenshot TensorBoard comparant directement value loss E2 (HIGH, instable) vs E3 (STABLE, low) - le contrast clarifie pourquoi E3 gagne -->
+Synthese courte: E1 est la baseline la plus stable, E2 atteint la meilleure reward finale mais avec plus d'instabilite, et E3 donne le meilleur compromis global entre performance, stabilite et inference.
 
 ### Comparaison finale
 
 | Critere | E1 | E2 | E3 |
 |---|---:|---:|---:|
-| Reward finale | 54.51 (step 555k) | **60.05 (step 705k)** | **55.77 (step 650k)** |
-| Episode length moyenne | Souvent 624 (max), avec dips ponctuels | Similaire: souvent 624, avec dips | Similaire: souvent 624, avec dips |
-| Policy loss finale | 0.027 -> 0.045 (stable) | 0.024 (stable) | 0.025-0.027 (stable) |
-| Value loss finale | 0.007 -> 1.10-1.25 (instabilite legere) | 0.004 -> 1.47 (instabilite plus marquee) | 0.005 -> 1.22 (meilleure stabilite!) |
-| Taux de succes inference | 1/2 (50%, 1 crash, 1 tour 23.26s) | ~1/4 ou moins (25%, varios crashes, 1 tour 20.18s) | **Meilleur (~75%+), rare de crash, 1 tour 20.91s** |
-| Temps tour moyen (reussi) | 23.26 sec | 20.18 sec (plus rapide) | **20.91 sec (bon compromis)** |
-| Duree du run | 46 min | 52 min (1h) | **50 min** |
-| Progression courbe | Bruitee, oscillations | Bruitee, oscillations | **Propre et fulgurante, peu d'oscillations** |
+| Reward finale | 54.51 | 60.05 | 55.77 |
+| Value loss finale | 1.10-1.25 | 1.47 | 1.22 |
+| Temps tour moyen (reussi) | 23.26 s | 20.18 s | 20.91 s |
+| Robustesse inference | Stable mais lente | Plus rapide mais moins fiable | Meilleur compromis |
 
 ---
 
 ## Analyse
 
-### A commenter simplement
-- Le batch size plus grand ou plus petit.
-- L'effet du learning rate.
-- La stabilite des courbes.
-- La difference entre performance et vitesse de calcul.
-- Le temps d'entrainement par experience.
-- Le temps moyen pour finir le trajet en inference (5 essais conseilles).
-- Le nombre de crashs sur 5 essais inference (metrique de robustesse).
-
-### Limites
-- Un seul run par configuration.
-- Alea dans l'environnement.
-- Temps de calcul sur la machine.
-- Influence possible du reward shaping.
-
-### Bilan court
-- **Ce qui marche** : les trois configurations convergent vers une reward positive (baseline 54.51, E2 60.05, E3 55.77). L'augmentation du batch size (E1→E2) accelere l'apprentissage mais risque l'instabilite; E3 trouve un equilibre optimal.
-- **Ce qui reste instable** : E2 montre une value loss plus elevee (1.47) et un taux de crash en inference plus eleve. E1 est stable mais lent. E3 reconcilie ces deux tendances.
-- **Ce qu'on garde comme meilleure configuration** : **E3** offre le meilleur compromis : reward finale 55.77, value loss 1.22, robustesse en inference superieure, et progression propre sans oscillations excessives.
+Les resultats montrent un compromis clair entre rapidite et stabilite. E2 monte plus haut en reward mais degrade la robustesse en inference. E3 revient vers un meilleur equilibre: value loss plus maitrisee, comportement plus fiable, et performance finale toujours elevee. Les limites principales restent le nombre de runs (1 par config), l'alea de l'environnement et la sensibilite au contexte machine.
 
 ---
 
 ## Conclusion
 
-### Synthese
-Les trois experiences ont montre que l'ajustement du batch size et du learning rate ont un impact majeur sur le compromis stabilite/performance. E1 (baseline) offre une stabilite acceptable mais une convergence lente. E2 accelere l'apprentissage (reward max 60.05) mais au prix d'une instabilite accrue (value loss 1.47, crashes en inference). E3 reconcilie ces deux approches : avec un batch size intermediaire (768) et un learning rate modere (2.2e-4), E3 atteint une reward finale de 55.77, une value loss maitrisee a 1.22, et surtout une robustesse en inference nettement superieure aux deux autres configurations.
-
-### Configuration retenue
-
-**E3 - Configuration optimale pour le projet TP2 :**
-
-| Parametre | Valeur | Justification |
-|---|---|---|
-| `batch_size` | 768 | Compromis entre E1 (512) et E2 (1024) pour lisser les gradients sans exces |
-| `learning_rate` | 2.2e-4 | Entre E1 (3e-4) et E2 (1.5e-4) pour eviter variance tout en gardant progression rapide |
-| `epsilon` | 0.17 | PPO clip modere : plus strict que E1 (0.2) mais moins rigide que E2 (0.15) |
-| `beta` | 0.004 | Equilibre exploration/exploitation entre E1 (0.005) et E2 (0.003) |
-| `lambda` | 0.95 | Inchange, GAE discount factor optimal |
-| `num_epoch` | 3 | Inchange, suffisant pour convergence |
-| `max_steps` | 650000 | Limite pratique choisie pour un run d'environ 50 min |
-
-**Resultat E3 :** Reward 55.77 (step 650k), Value Loss 1.22, temps tour 20.91s, stabilite en inference ~75%+ de succes.
-
-### Amelioration future possible
-Une continuation d'E3 pour ~100k steps supplementaires (aurai pris ~15 min) aurait probablement permis d'atteindre 57-58 en reward sans perdre la robustesse observee; sinon, une strategie de **learning rate decay** (diminution progressive du LR) pourrait reduire davantage la variance de la value loss en fin d'apprentissage.
-
----
-
-## Annexe
-
-### Lancement
-```bash
-mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
-```
-
-### Rappel
-Dans la console, chaque run cree son propre dossier de resultats, par exemple `results/Experience1`.
-
-### TensorBoard
-```bash
-tensorboard --logdir "C:\Users\Ajax\AI_in_games_course\results" --port 6006
-```
-
-### Test du modele dans Unity
-- Utiliser le fichier modele `.onnx` du run (par exemple `results/Experience1/car_agent.onnx`).
-- Le glisser dans le champ `Model` des Behavior Parameters de l'agent.
+E3 est la configuration retenue pour le TP2: elle garde une reward finale elevee, une value loss mieux controlee que E2, et une robustesse en inference plus solide. Le point principal du projet est confirme: augmenter la vitesse d'apprentissage n'est utile que si la stabilite reste acceptable. Pour aller plus loin, une suite logique est d'appliquer un learning rate decay ou de prolonger legerement E3.
