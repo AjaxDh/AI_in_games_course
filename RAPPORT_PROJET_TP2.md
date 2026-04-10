@@ -60,14 +60,13 @@ Autrement dit, les resultats d'une experience modifient l'objectif de la suivant
 - **Ce qu'on teste**: la baseline PPO sur track1.
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience1`.
-	- 🖼️ **[IMAGE REQUISE - E1 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E1 seule.
-	<!-- ILLUSTRATION_E1_REWARD: inserer ici screenshot TensorBoard reward E1 montrant la hausse progressive avec dips et remontee vers 54.51 -->
+![alt text](image-4.png)	<!-- ILLUSTRATION_E1_REWARD: inserer ici screenshot TensorBoard reward E1 montrant la hausse progressive avec dips et remontee vers 54.51 -->
 	- La courbe `Environment/Cumulative Reward` monte globalement tout le long du run.
 	- D'apres l'export JSON, la valeur passe d'environ `-2.57` au debut a un pic proche de `65.22` (step `545000`), puis termine vers `54.51` (step `555000`) apres un dip suivi d'une remontee.
-	- 🖼️ **[IMAGE REQUISE - E1 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E1.
+	- ![alt text](image-5.png)
 	<!-- ILLUSTRATION_E1_EPISODE: inserer ici screenshot TensorBoard episode length E1 montrant bruit avec pics a 624 -->
 	- `Environment/Episode Length` reste bruitee et souvent proche du plafond (`624`), avec quelques baisses ponctuelles (par exemple autour de `453` au step `80000`).
-	- 🖼️ **[IMAGE REQUISE - E1 Losses]** Capture TensorBoard de `Losses/Policy Loss` ET `Losses/Value Loss` pour E1 ensemble.
+	![alt text](image-6.png)
 	<!-- ILLUSTRATION_E1_LOSSES: inserer ici screenshot TensorBoard montrant policy loss stable 0.027-0.045 et value loss montant 0.007->1.10 -->
 	- `Losses/Policy Loss` oscille dans une plage assez stable, globalement entre `0.027` et `0.045`.
 	- `Losses/Value Loss` augmente progressivement (d'environ `0.007` au debut jusqu'a ~`1.10` en fin de run), avec des fluctuations.
@@ -93,13 +92,13 @@ Autrement dit, les resultats d'une experience modifient l'objectif de la suivant
 	- `beta` legerement reduit pour diminuer le cote trop aleatoire en fin d'apprentissage et gagner en trajectoire propre.
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience2`.
-	- 🖼️ **[IMAGE REQUISE - E2 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E2.
+	![alt text](image-7.png)
 	<!-- ILLUSTRATION_E2_REWARD: inserer ici screenshot TensorBoard reward E2 montrant la hausse jusqu'a 60.05 mais avec oscillations plus fortes -->
 	- Cumulative reward: -2.53 (debut) → 60.05 (step 705k, **plus eleve que E1 final!**)
-	- 🖼️ **[IMAGE REQUISE - E2 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E2.
+	![alt text](image-8.png)
 	<!-- ILLUSTRATION_E2_EPISODE: inserer ici screenshot TensorBoard episode length E2 montrant bruit similaire a E1 -->
 	- Episode length: Similaire a E1, souvent proche du max 624 avec dips ponctuels.
-	- 🖼️ **[IMAGE REQUISE - E2 Losses]** Capture TensorBoard de `Losses/Policy Loss` ET `Losses/Value Loss` pour E2 (bien montrer value loss qui monte a 1.47!).
+	![alt text](image-9.png).
 	<!-- ILLUSTRATION_E2_LOSSES: inserer ici screenshot montrant policy loss stable mais VALUE LOSS VISIBLEMENT PLUS HAUTE que E1, atteignant 1.47 en fin -->
 	- Policy loss: Oscille entre 0.024-0.030 (stable, comparable a E1).
 	- Value loss: Monte a 1.47 (legerement plus instabile que E1 qui atteignait max 1.10-1.25).
@@ -124,13 +123,14 @@ Autrement dit, les resultats d'une experience modifient l'objectif de la suivant
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience3`.
 	- Training duration: environ `50 minutes` pour atteindre 650k steps (`max_steps: 650000` arrêt automatique).
-	- 🖼️ **[IMAGE REQUISE - E3 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E3 (montrer la progression PROPRE et FULGURANTE!).
+	![alt text](image-13.png)
 	<!-- ILLUSTRATION_E3_REWARD_CLEAN: inserer ici screenshot TensorBoard reward E3 montrant courbe tres reguliere avec peu d'oscillations, progression constante vers 55.77 -->
 	- Cumulative reward: -2.53 (debut) → 55.77 (step 650k)
-	- 🖼️ **[IMAGE REQUISE - E3 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E3.
+![alt text](image-15.png)
 	<!-- ILLUSTRATION_E3_EPISODE: inserer ici screenshot TensorBoard episode length E3 montrant meme bruit que E1/E2 -->
 	- Episode length: Similaire a E1/E2, souvent proche du max 624 avec dips ponctuels.
-	- 🖼️ **[IMAGE REQUISE - E3 Losses]** Capture TensorBoard de `Losses/Policy Loss` ET `Losses/Value Loss` pour E3 (IMPORTANT: montrer value loss a 1.22, cle entre E1 et E2!).
+![alt text](image-16.png)
+![alt text](image-17.png)
 	<!-- ILLUSTRATION_E3_LOSSES: inserer ici screenshot montrant policy loss stable ET VALUE LOSS A 1.22 (meilleur que E2!) - c'est la difference cruciale -->
 	- Policy loss: Oscille entre 0.025-0.027 (tres stable, comparable a E1 et E2).
 	- Value loss: Monte a 1.22 (entre E1 ~1.10-1.25 et E2 ~1.47) → meilleur que E2!
@@ -140,7 +140,6 @@ Autrement dit, les resultats d'une experience modifient l'objectif de la suivant
 ---
 
 ## Resultats
-
 Synthese courte: E1 est la baseline la plus stable, E2 atteint la meilleure reward finale mais avec plus d'instabilite, et E3 donne le meilleur compromis global entre performance, stabilite et inference.
 
 ### Comparaison finale
