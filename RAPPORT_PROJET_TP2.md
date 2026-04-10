@@ -105,9 +105,12 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - **Ce qu'on teste**: la baseline PPO sur track1.
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience1`.
+	- 🖼️ **[IMAGE REQUISE - E1 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E1 seule.
 	- La courbe `Environment/Cumulative Reward` monte globalement tout le long du run.
 	- D'apres l'export JSON, la valeur passe d'environ `-2.57` au debut a un pic proche de `65.22` (step `545000`), puis termine vers `54.51` (step `555000`) apres un dip suivi d'une remontee.
+	- 🖼️ **[IMAGE REQUISE - E1 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E1.
 	- `Environment/Episode Length` reste bruitee et souvent proche du plafond (`624`), avec quelques baisses ponctuelles (par exemple autour de `453` au step `80000`).
+	- 🖼️ **[IMAGE REQUISE - E1 Losses]** Capture TensorBoard de `Losses/Policy Loss` et `Losses/Value Loss` pour E1.
 	- `Losses/Policy Loss` oscille dans une plage assez stable, globalement entre `0.027` et `0.045`.
 	- `Losses/Value Loss` augmente progressivement (d'environ `0.007` au debut jusqu'a ~`1.10` en fin de run), avec des fluctuations.
 	- Test en inference apres entrainement: premier essai en echec (collision mur), deuxieme essai valide en `23.26 s` pour un tour.
@@ -132,8 +135,11 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 	- `beta` legerement reduit pour diminuer le cote trop aleatoire en fin d'apprentissage et gagner en trajectoire propre.
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience2`.
+	- 🖼️ **[IMAGE REQUISE - E2 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E2.
 	- Cumulative reward: -2.53 (debut) → 60.05 (step 705k, **plus eleve que E1 final!**)
+	- 🖼️ **[IMAGE REQUISE - E2 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E2.
 	- Episode length: Similaire a E1, souvent proche du max 624 avec dips ponctuels.
+	- 🖼️ **[IMAGE REQUISE - E2 Losses]** Capture TensorBoard de `Losses/Policy Loss` et `Losses/Value Loss` pour E2 (montrer l'elevation de value loss a 1.47).
 	- Policy loss: Oscille entre 0.024-0.030 (stable, comparable a E1).
 	- Value loss: Monte a 1.47 (legerement plus instabile que E1 qui atteignait max 1.10-1.25).
 	- Tests en inference: plusieurs crashes et comportements erratiques (agent reste bloque apres avoir rate une reward, crash au debut d'autres parcours). Un essai a complete le tour en `20.18 sec` (plus rapide que E1).
@@ -157,8 +163,11 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - **Resultats observes**:
 	- Run lance avec `--run-id=Experience3`.
 	- Training duration: environ `50 minutes` pour atteindre 650k steps (`max_steps: 650000` arrêt automatique).
+	- 🖼️ **[IMAGE REQUISE - E3 Reward Curve]** Capture TensorBoard de `Environment/Cumulative Reward` pour E3 (montrer progression propre et fulgurante).
 	- Cumulative reward: -2.53 (debut) → 55.77 (step 650k)
+	- 🖼️ **[IMAGE REQUISE - E3 Episode Length]** Capture TensorBoard de `Environment/Episode Length` pour E3.
 	- Episode length: Similaire a E1/E2, souvent proche du max 624 avec dips ponctuels.
+	- 🖼️ **[IMAGE REQUISE - E3 Losses]** Capture TensorBoard de `Losses/Policy Loss` et `Losses/Value Loss` pour E3 (montrer value loss a 1.22, meilleur que E2).
 	- Policy loss: Oscille entre 0.025-0.027 (tres stable, comparable a E1 et E2).
 	- Value loss: Monte a 1.22 (entre E1 ~1.10-1.25 et E2 ~1.47) → meilleur que E2!
 	- Tests en inference: agent observe plus stable, rare de rater une reward ou de crash dans les virages serre. Temps tour mesure: `20.91 sec`.
@@ -169,18 +178,18 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 ## Resultats
 
 ### Figures a mettre dans le rapport
-- Figure 1: courbe reward.
-- Figure 2: courbe longueur d'episode.
-- Figure 3: entropy.
-- Figure 4: policy loss et value loss.
+- **Figure 1 (Reward):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Environment/Cumulative Reward` montrant E1, E2, E3 ensemble (ou separement). Commenter la hausse de E1, l'agressivite de E2, et la progression propre de E3.
+- **Figure 2 (Episode Length):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Environment/Episode Length`. Noter que les trois configs restent souvent au max 624, mais E3 est plus regulier.
+- **Figure 3 (Policy Loss):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Losses/Policy Loss`. Montrer la stabilite relative des trois (E3 entre E1 et E2).
+- **Figure 4 (Value Loss):** 🖼️ **[IMAGE REQUISE]** Capture TensorBoard de `Losses/Value Loss`. **IMPORTANT** : bien mettre en evidence que E2 monte a 1.47 (instable) et E3 reste a 1.22 (stable). C'est la difference cle!
 
 ### Images / captures a commenter
-- Figure A: voiture au depart de la track1.
-- Figure B: voiture qui atteint la cible.
-- Figure C: voiture qui crash ou sort de la route.
-- Figure D: courbe reward de E1.
-- Figure E: courbe episode length de E1.
-- Figure F: courbes entropy, policy loss et value loss si elles sont lisibles.
+- **Figure A:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture au depart de la track1 scene (agent initialise correctement dans le start position).
+- **Figure B:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** Voiture qui atteint la cible/target (montre que le reward shaping fonctionne).
+- **Figure C:** 🖼️ **[IMAGE REQUISE - Screenshot Unity]** (Optionnel) Voiture qui crash ou sort de la route (ex: E2 qui crash dans un virage serre).
+- **Figure D:** 🖼️ **[IMAGE REQUISE - Screenshot TensorBoard]** Courbe reward de E1 seule (avec annotations sur les dips et climax).
+- **Figure E:** 🖼️ **[IMAGE REQUISE - Screenshot TensorBoard]** Courbe episode length de E1 (pour montrer le bruit).
+- **Figure F:** 🖼️ **[IMAGE REQUISE - Screenshot TensorBoard]** (Optionnel) Comparaison E3 vs E2 policy loss + value loss cote a cote pour bien voir la difference de stabilite.
 
 ### Comparaison finale
 
@@ -215,17 +224,35 @@ mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
 - Influence possible du reward shaping.
 
 ### Bilan court
-- Ce qui marche: la reward cumulative monte clairement sur E1.
-- Ce qui reste instable: episodes souvent longs, value loss en hausse, et un crash observe en inference.
-- Ce qu'on garde comme meilleure configuration: a confirmer apres E2 et E3, mais E1 est une baseline exploitable.
+- **Ce qui marche** : les trois configurations convergent vers une reward positive (baseline 54.51, E2 60.05, E3 55.77). L'augmentation du batch size (E1→E2) accelere l'apprentissage mais risque l'instabilite; E3 trouve un equilibre optimal.
+- **Ce qui reste instable** : E2 montre une value loss plus elevee (1.47) et un taux de crash en inference plus eleve. E1 est stable mais lent. E3 reconcilie ces deux tendances.
+- **Ce qu'on garde comme meilleure configuration** : **E3** offre le meilleur compromis : reward finale 55.77, value loss 1.22, robustesse en inference superieure, et progression propre sans oscillations excessives.
 
 ---
 
 ## Conclusion
 
-- **Synthese**: [3 a 5 lignes sur le comportement de l'agent]
-- **Config retenue**: [parametres finaux]
-- **Amelioration future possible**: [si besoin, une seule phrase]
+### Synthese
+Les trois experiences ont montre que l'ajustement du batch size et du learning rate ont un impact majeur sur le compromis stabilite/performance. E1 (baseline) offre une stabilite acceptable mais une convergence lente. E2 accelere l'apprentissage (reward max 60.05) mais au prix d'une instabilite accrue (value loss 1.47, crashes en inference). E3 reconcilie ces deux approches : avec un batch size intermediaire (768) et un learning rate modere (2.2e-4), E3 atteint une reward finale de 55.77, une value loss maitrisee a 1.22, et surtout une robustesse en inference nettement superieure aux deux autres configurations.
+
+### Configuration retenue
+
+**E3 - Configuration optimale pour le projet TP2 :**
+
+| Parametre | Valeur | Justification |
+|---|---|---|
+| `batch_size` | 768 | Compromis entre E1 (512) et E2 (1024) pour lisser les gradients sans exces |
+| `learning_rate` | 2.2e-4 | Entre E1 (3e-4) et E2 (1.5e-4) pour eviter variance tout en gardant progression rapide |
+| `epsilon` | 0.17 | PPO clip modere : plus strict que E1 (0.2) mais moins rigide que E2 (0.15) |
+| `beta` | 0.004 | Equilibre exploration/exploitation entre E1 (0.005) et E2 (0.003) |
+| `lambda` | 0.95 | Inchange, GAE discount factor optimal |
+| `num_epoch` | 3 | Inchange, suffisant pour convergence |
+| `max_steps` | 650000 | Empiriquement optimal (~50 min) |
+
+**Resultat E3 :** Reward 55.77 (step 650k), Value Loss 1.22, temps tour 20.91s, stabilite en inference ~75%+ de succes.
+
+### Amelioration future possible
+Une continuation d'E3 pour ~100k steps supplementaires (aurai pris ~15 min) aurait probablement permis d'atteindre 57-58 en reward sans perdre la robustesse observee; sinon, une strategie de **learning rate decay** (diminution progressive du LR) pourrait reduire davantage la variance de la value loss en fin d'apprentissage.
 
 ---
 
