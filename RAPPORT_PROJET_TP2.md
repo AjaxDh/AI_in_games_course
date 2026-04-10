@@ -1,58 +1,24 @@
 # Rapport Projet RL - TP2 AI Driver Unity (PPO)
-
 Ajax DESHAYES--HUET
-
 ---
 
 ## Introduction
 
-Ce TP2 consiste a entrainer un agent de voiture dans Unity avec ML-Agents et PPO.
-Le but est simple: faire rouler la voiture sans crash.
+### Contexte
+Ce TP2 porte sur l'entrainement d'un agent de conduite autonome dans Unity avec ML-Agents, en utilisant l'algorithme PPO. L'agent doit apprendre a suivre la piste de la scene track1 de facon fiable, avec peu de crashes, tout en conservant une progression stable pendant l'entrainement.
 
-Le rapport peut rester leger. L'important est surtout de montrer:
-1. la configuration de depart,
-2. les changements faits entre les experiences,
-3. ce qu'on observe sur les courbes,
-4. la configuration retenue a la fin.
-
----
-
-## Rappel du projet
-
-### Fichiers principaux
-- `results/configuration_example.yaml`: configuration PPO.
-- `AI_in_games_unity/Assets/Scripts/car_agents/car_controller.cs`: mouvement de la voiture.
-- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent.cs`: classe de base de l'agent.
-- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent_template_track1.cs`: script a completer pour le TP2.
-
-### Scripts a citer dans le rapport
-- `results/configuration_example.yaml`: fichier de configuration du PPO.
-- `AI_in_games_unity/Assets/Scripts/car_agents/car_controller.cs`: controle les roues, l'acceleration, le freinage et la direction.
-- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent.cs`: gere l'initialisation commune de l'agent et les episodes.
-- `AI_in_games_unity/Assets/Scripts/car_agents/car_agent_template_track1.cs`: classe a completer pour connecter l'agent a l'environnement.
-
-### Ce qu'il faut faire dans Unity
-- Completer `_getTarget()` et `_getStart()`.
-- Completer `CollectObservations()`.
-- Completer les fonctions de reward.
-- Completer `OnActionReceived()`.
-- Regler les parametres de l'agent dans l'inspecteur.
-
-### Parametres Unity a mentionner
-- Behavior Name.
-- Vector Observation space size.
-- Stacked Vectors.
-- Discrete branches.
-- Model / Inference Device / Deterministic Inference si un modele est charge.
+### Objectifs
+Ce rapport a pour objectifs de:
+1. presenter la configuration de depart et les hyperparametres modifies,
+2. comparer les resultats de trois experiences (E1, E2, E3),
+3. analyser le compromis entre performance, stabilite et robustesse en inference,
+4. justifier la configuration finale retenue.
 
 ---
 
 ## Methodologie
 
-### Point important sur PPO
-PPO est une methode policy-based. On peut simplement dire que l'algorithme apprend une politique stable grace a des mises a jour controlees.
-
-### Parametres utiles a tester
+### Parametres modifiables
 - Batch size.
 - Buffer size.
 - Learning rate.
@@ -62,24 +28,16 @@ PPO est une methode policy-based. On peut simplement dire que l'algorithme appre
 - Num epoch.
 - Gamma.
 
-### Remarque sur le batch size
-Le prof a surtout insiste sur le batch size.
-Si le batch size augmente, l'optimisation utilise plus d'observations, donc les mises a jour sont souvent plus stables mais aussi plus lourdes.
+### Logique generale du rapport
+Le rapport doit montrer une demarche iterative et non une suite de tests isoles.
+Chaque experience sert a:
+1. observer un comportement,
+2. l'interpreter,
+3. identifier une limite,
+4. ajuster les parametres,
+5. verifier si la nouvelle hypothese ameliore la situation.
 
-### E1 a lancer en premier
-Le premier run sert de baseline.
-Il faut garder la configuration par defaut, lancer l'entrainement sur la scene track1, puis commenter les courbes obtenues sans modifier trop de choses.
-
-### Convention de nommage des runs
-- E1: `Experience1`
-- E2: `Experience2`
-- E3: `Experience3`
-
-Exemple de lancement E1:
-
-```bash
-mlagents-learn results/configuration_example.yaml --run-id=Experience1 --force
-```
+Autrement dit, les resultats d'une experience modifient l'objectif de la suivante.
 
 ---
 
