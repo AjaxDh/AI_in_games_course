@@ -17,6 +17,8 @@ L'agent est entraîné avec un algorithme Deep Q-Network (DQN), implanté en Pyt
 - Interpréter les résultats (performance, stabilité, limites).
 - Faire évoluer les objectifs au fil des expériences à partir des résultats observés.
 
+En une phrase: trouver une configuration qui apprend de façon fiable sans exploser le temps d'exécution.
+
 ---
 
 ## Méthodologie
@@ -55,6 +57,8 @@ Le rapport peut être raconté comme une suite d'itérations:
 - Expérience 4: affinement final, validation de la configuration retenue et réduction des spikes encore trop présents.
 ![spike](image.png)
 
+Lecture rapide: E1 pose la base, E2 va trop loin sur les contraintes, E3 corrige, E4 valide le meilleur compromis.
+
 ### Tableau récapitulatif des expériences
 
 | Expérience | Gamma | N épisodes | lr | Epsilon (début/fin/décroissance) | F | B | M | NN | Récompenses | Attente principale |
@@ -92,6 +96,7 @@ Le rapport peut être raconté comme une suite d'itérations:
   - E1 valide la base DQN: l'agent apprend à atteindre la cible plus régulièrement en fin de run.
   - Les spikes ne signifient pas un bug en soi; ils sont attendus dans un environnement stochastique avec exploration.
   - Le risque principal est que l'agent fasse du circling (tourne autour de la récompense sans atteindre la cible) pour accumuler des récompenses intermédiaires sans succès terminal suffisamment fiable, ce qui motive une réduction de la récompense intermédiaire et une limite de temps plus pénalisée en E2.
+- **À retenir (E1)**: bonne base d'apprentissage, mais variabilité encore élevée et risque de circling à corriger.
 
 #### Expérience E2 - Compromis vitesse/stabilité
 - **Choix des paramètres**:
@@ -124,6 +129,7 @@ Le rapport peut être raconté comme une suite d'itérations:
   - E2 a bien réduit le temps total de run par rapport à E1, mais au prix d'une baisse de qualité d'apprentissage (reward moyenne plus faible, épisodes plus longs, nombreux timeouts).
   - La combinaison `eps_decay=1500` + `limite de pas=400` + `limite de temps=-0.7` paraît trop contraignante pour converger proprement.
   - Le lag reste contraignant en pratique, donc E3 conserve un compromis `batch_size=128` et corrige d'abord les autres facteurs (limite de temps, epsilon final, nombre d'épisodes).
+- **À retenir (E2)**: plus rapide, mais trop punitif; le gain de runtime se paie par une convergence dégradée.
 
 #### Expérience E3 - Stabilisation après E2
 - **Choix des paramètres**:
@@ -154,6 +160,7 @@ Le rapport peut être raconté comme une suite d'itérations:
   - Le taux de succès remonte nettement (55.9% vs 42.0% en E2) et les timeouts baissent fortement (16.8% vs 39.33% en E2).
   - E3 reste toutefois en dessous de E1 sur la performance globale (reward moyenne et régularité de convergence).
   - Le compromis E3 est valide pour stabiliser sans exploser le coût de calcul, mais ne dépasse pas encore la baseline E1.
+- **À retenir (E3)**: correction efficace d'E2, compromis propre, mais encore un cran sous E1 en performance brute.
 
 #### Expérience E4 - Finale (validation du compromis)
 - **Choix des paramètres**:
@@ -178,6 +185,7 @@ Le rapport peut être raconté comme une suite d'itérations:
   - E4 améliore nettement E3 sur la reward moyenne et le taux de succès, tout en conservant un taux de timeout bas.
   - Le compromis visé (stabilité sans effondrement des performances) est globalement atteint.
   - E4 ne dépasse pas E1 en performance brute, mais offre un équilibre plus prudent et plus robuste que E2/E3.
+- **À retenir (E4)**: meilleur compromis opérationnel du projet, donc choix final cohérent.
 
 ---
 
@@ -190,6 +198,8 @@ Cette section sert de synthèse globale. Les détails d'observation et d'interpr
 - E3 récupère une partie de la stabilité perdue en E2, sans retrouver le niveau global de E1.
 - E4 améliore encore le compromis (reward et succès en hausse vs E3), avec une fin de run plus lisible.
 - Le couple limite de temps stricte + pénalité forte en E2 paraît trop contraignant, et le runtime reste sensible aux conditions machine.
+
+Message clé: accélérer l'entraînement est utile seulement si la stabilité reste suffisante pour obtenir une politique exploitable.
 
 ### Tableau de comparaison finale
 
@@ -204,7 +214,7 @@ Cette section sert de synthèse globale. Les détails d'observation et d'interpr
 
 ## Analyse
 
-Les résultats confirment un compromis net entre vitesse de simulation et stabilité d'apprentissage: E2 accélère le run mais dégrade la convergence, alors que E3 puis E4 rétablissent progressivement la stabilité sans revenir aux coûts les plus élevés. La récompense intermédiaire réduite aide à limiter le circling, mais ne suffit pas seule si les contraintes de temps sont trop sévères. Enfin, l'interprétation reste limitée par un nombre restreint de runs, l'aléa du spawn, et la sensibilité au contexte d'exécution (Editor/charge machine).
+Les résultats confirment un compromis net entre vitesse de simulation et stabilité d'apprentissage. E2 accélère le run, mais dégrade la convergence. E3 puis E4 rétablissent progressivement la stabilité sans revenir aux coûts les plus élevés. La récompense intermédiaire réduite aide à limiter le circling, mais ne suffit pas si les contraintes de temps sont trop sévères. Enfin, ces conclusions restent à consolider: le nombre de runs est limité, le spawn est aléatoire, et le contexte d'exécution (Editor/charge machine) influence les mesures.
 
 ---
 
@@ -214,5 +224,10 @@ Les résultats confirment un compromis net entre vitesse de simulation et stabil
 - E4 est la configuration recommandée pour le meilleur compromis stabilité/performance sur ce projet.
 - Les objectifs initiaux sont atteints: agent fonctionnel, impact des hyperparamètres observé, comparaison des 4 expériences complète.
 - Pour consolider ces conclusions: répéter les runs avec seed fixée, puis tester Double DQN si nécessaire.
+
+Si je devais poursuivre en priorité:
+1. relancer E1 et E4 avec plusieurs seeds fixes pour mesurer la robustesse réelle;
+2. garder E4 comme base et tester Double DQN à budget de calcul comparable;
+3. valider le comportement en inférence longue (stabilité sur des épisodes successifs).
 
 ---
